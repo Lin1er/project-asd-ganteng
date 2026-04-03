@@ -22,12 +22,13 @@ Aplikasi **console berbasis C++** untuk mengelola antrean sampel material yang m
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Tambah Sampel** | Menambahkan sampel baru ke antrean pengujian (FIFO) |
+| **Tambah Sampel** | Menambahkan sampel baru ke antrean dengan kode auto-generated (SPL-1001, SPL-1002, ...) |
 | **Proses Sampel** | Memproses sampel pertama dalam antrean |
 | **Lihat Antrean** | Menampilkan seluruh sampel yang menunggu pengujian |
 | **Riwayat Pengujian** | Menyimpan dan menampilkan sampel yang telah diproses (LIFO) |
 | **Dashboard Dinamis** | Menampilkan jumlah antrean dan sampel selesai secara real-time |
 | **Cari Sampel** | Mencari sampel dalam antrean berdasarkan kode |
+| **Auto-generated ID** | Setiap sampel mendapat kode unik otomatis (UUID-like) |
 | **Animasi Loading** | Efek visual saat memproses sampel |
 | **Website Interface** | Visualisasi interaktif linked list dengan animasi (+10 poin bonus) |
 | **Cross-Platform** | Mendukung Windows dan Linux/Unix |
@@ -177,9 +178,12 @@ g++ -std=c++11 -o app main.cpp
 
 # Windows (MinGW)
 g++ -std=c++11 -o app.exe main.cpp
+
+# Dengan warning check
+g++ -std=c++11 -Wall -o app main.cpp
 ```
 
-### Jalankan
+### Jalankan Aplikasi Console
 
 ```bash
 # Linux/Unix
@@ -187,6 +191,32 @@ g++ -std=c++11 -o app.exe main.cpp
 
 # Windows
 app.exe
+
+# Output akan menampilkan:
+#   - ASCII Art Header
+#   - Dashboard dengan statistik real-time
+#   - Menu interaktif (1-6)
+#   - Sampel dengan kode auto-generated (SPL-1001, SPL-1002, ...)
+```
+
+### Jalankan Website
+
+```bash
+# Cara 1: Buka langsung di browser
+# Klik dua kali file: web/index.html
+
+# Cara 2: Menggunakan Python
+cd web && python3 -m http.server 8000
+# Buka browser ke: http://localhost:8000
+
+# Cara 3: Menggunakan Node.js
+npx serve web
+
+# Website features:
+#   - Visualisasi Queue dan Stack
+#   - Form untuk tambah sampel (kode auto-generated)
+#   - Real-time table updates
+#   - Code snippets dengan penjelasan
 ```
 
 ---
