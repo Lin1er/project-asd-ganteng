@@ -9,21 +9,54 @@
 
 // ====== GLOBAL COUNTER FOR AUTO-GENERATION ======
 let sampleCounter = 1000;
+let antreanCounter = 0;
 
 // Generate kode sampel unik (SPL-1001, SPL-1002, dst)
 function generateSampleCode() {
   return "SPL-" + (++sampleCounter);
 }
 
+// Enum untuk jenis uji
+const JenisUji = {
+  UJI_TARIK:        1,
+  UJI_TEKAN:        2,
+  UJI_KEKERASAN:    3,
+  UJI_IMPAK:        4,
+  UJI_LENTUR:       5,
+  UJI_KELELAHAN:    6,
+  UJI_KOROSI:       7,
+  UJI_METALOGRAFI:  8,
+  UJI_KOMPOSISI:    9,
+  UJI_TERMAL:       10,
+};
+
+// Konversi enum ke string
+function jenisUjiToString(kode) {
+  const mapping = {
+    1: "Uji Tarik (Tensile Test)",
+    2: "Uji Tekan (Compression Test)",
+    3: "Uji Kekerasan (Hardness Test)",
+    4: "Uji Impak (Impact Test)",
+    5: "Uji Lentur (Flexural Test)",
+    6: "Uji Kelelahan (Fatigue Test)",
+    7: "Uji Korosi (Corrosion Test)",
+    8: "Metalografi (Metallography)",
+    9: "Analisis Komposisi (SEM/EDX)",
+    10: "Analisis Termal (TGA/DSC)",
+  };
+  return mapping[kode] || "Tidak Diketahui";
+}
+
 // ====== NODE STRUCTURE ======
 // Representasi setiap sampel dalam linked list
 class SampleNode {
-    constructor(pengirim, jenisUji, jadwal) {
+    constructor(pengirim, jenisUjiKode, jadwal) {
         // Data fields
-        this.kode = generateSampleCode();  // Auto-generated
-        this.pengirim = pengirim;          // Nama pengirim
-        this.jenisUji = jenisUji;          // Jenis pengujian
-        this.jadwal = jadwal;              // Jadwal pengujian
+        this.noAntrean = 0;                 // Nomor antrean (set oleh Queue)
+        this.kode = generateSampleCode();   // Auto-generated
+        this.pengirim = pengirim;           // Nama pengirim
+        this.jenisUjiKode = jenisUjiKode;   // Jenis uji (enum number)
+        this.jadwal = jadwal;               // Jadwal pengujian
         
         // Pointer ke node berikutnya (linked list)
         this.next = null;
@@ -49,31 +82,30 @@ class QueueAntrean {
         return this.count;
     }
 
+    // Dapatkan nomor antrean berikutnya
+    nextNoAntrean() {
+        return this.count + 1;
+    }
+
     /**
      * ENQUEUE - Menambahkan sampel ke belakang antrean
      * Time Complexity: O(1)
-     * 
-     * Proses:
-     * 1. Buat node baru
-     * 2. Jika antrean kosong, head dan tail menunjuk ke node baru
-     * 3. Jika tidak, sambungkan tail.next ke node baru, update tail
      */
-    enqueue(pengirim, jenisUji, jadwal) {
-        const newNode = new SampleNode(pengirim, jenisUji, jadwal);
+    enqueue(pengirim, jenisUjiKode, jadwal) {
+        this.count++;
+        const newNode = new SampleNode(pengirim, jenisUjiKode, jadwal);
+        newNode.noAntrean = this.count;  // Set nomor antrean
         
         if (this.tail === null) {
-            // Antrean kosong - node baru jadi head dan tail
             this.head = this.tail = newNode;
         } else {
-            // Sambungkan ke belakang antrean
             this.tail.next = newNode;
             this.tail = newNode;
         }
         
-        this.count++;
         return {
             status: true,
-            message: `Sampel ${newNode.kode} berhasil ditambahkan ke antrean!`,
+            message: `Sampel ${newNode.kode} berhasil ditambahkan ke antrean! (No. Antrean: ${this.count})`,
             data: newNode
         };
     }
@@ -81,12 +113,6 @@ class QueueAntrean {
     /**
      * DEQUEUE - Mengambil sampel dari depan antrean
      * Time Complexity: O(1)
-     * 
-     * Proses:
-     * 1. Simpan referensi ke head
-     * 2. Pindahkan head ke node berikutnya
-     * 3. Jika head jadi null, tail juga harus null
-     * 4. Kembalikan node yang diambil
      */
     dequeue() {
         if (this.head === null) {
@@ -96,6 +122,23 @@ class QueueAntrean {
                 data: null
             };
         }
+
+        const temp = this.head;
+        this.head = this.head.next;
+
+        if (this.head === null) {
+            this.tail = null;
+        }
+
+        temp.next = null;
+        this.count--;
+        
+        return {
+            status: true,
+            message: `Sampel No. ${temp.noAntrean} berhasil diproses!`,
+            data: temp
+        };
+    }
 
         const temp = this.head;
         this.head = this.head.next;
@@ -172,9 +215,11 @@ class QueueAntrean {
         
         while (temp !== null) {
             result.push({
+                noAntrean: temp.noAntrean,
                 kode: temp.kode,
                 pengirim: temp.pengirim,
-                jenisUji: temp.jenisUji,
+                jenisUjiKode: temp.jenisUjiKode,
+                jenisUji: jenisUjiToString(temp.jenisUjiKode),
                 jadwal: temp.jadwal
             });
             temp = temp.next;
@@ -292,9 +337,11 @@ class StackHistory {
         
         while (temp !== null) {
             result.push({
+                noAntrean: temp.noAntrean,
                 kode: temp.kode,
                 pengirim: temp.pengirim,
-                jenisUji: temp.jenisUji,
+                jenisUjiKode: temp.jenisUjiKode,
+                jenisUji: jenisUjiToString(temp.jenisUjiKode),
                 jadwal: temp.jadwal
             });
             temp = temp.next;

@@ -217,17 +217,17 @@ elements.addSampleForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const pengirim = elements.pengirim.value.trim();
-    const jenisUji = elements.jenisUji.value;
+    const jenisUjiKode = parseInt(elements.jenisUji.value);
     const jadwal = elements.jadwal.value;
     
     // Validasi input (kode tidak perlu, auto-generated!)
-    if (!pengirim || !jenisUji || !jadwal) {
+    if (!pengirim || !jenisUjiKode || !jadwal) {
         showToast('Mohon lengkapi semua field!', 'error');
         return;
     }
     
     // Enqueue sampel baru (kode auto-generated di constructor)
-    const result = antrean.enqueue(pengirim, jenisUji, jadwal);
+    const result = antrean.enqueue(pengirim, jenisUjiKode, jadwal);
     
     if (result.status) {
         showToast(`${result.message}`, 'success');
@@ -374,9 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.jadwal.value = now.toISOString().slice(0, 16);
     
     // Add some demo data
-    antrean.enqueue('PT. Baja Utama', 'Uji Tarik', '2024-03-15T09:00');
-    antrean.enqueue('CV. Metal Jaya', 'Uji Keras', '2024-03-15T10:30');
-    antrean.enqueue('PT. Steel Indo', 'Uji Impak', '2024-03-15T14:00');
+    antrean.enqueue('PT. Baja Utama', 1, '2024-03-15T09:00');
+    antrean.enqueue('CV. Metal Jaya', 3, '2024-03-15T10:30');
+    antrean.enqueue('PT. Steel Indo', 4, '2024-03-15T14:00');
     
     // Initial UI update
     updateUI();
