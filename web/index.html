@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Material - Sistem Antrean Sampel Laboratorium</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <pre class="ascii-art">
+  _          _      ____    __  __       _            _       _ 
+ | |    __ _| |__  |  _ \  |  \/  | __ _| |_ ___ _ __(_) __ _| |
+ | |   / _` | '_ \ | |_) | | |\/| |/ _` | __/ _ \ '__| |/ _` | |
+ | |__| (_| | |_) ||  __/  | |  | | (_| | ||  __/ |  | | (_| | |
+ |_____\__,_|_.__/ |_|     |_|  |_|\__,_|\__\___|_|  |_|\__,_|_|
+            </pre>
+            <p class="subtitle">Sistem Antrean Sampel Laboratorium</p>
+            <p class="tech-badge">Linked List Implementation</p>
+        </header>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard">
+            <div class="stat-card queue-stat">
+                <span class="stat-icon">Q</span>
+                <div class="stat-info">
+                    <span class="stat-number" id="queueCount">0</span>
+                    <span class="stat-label">Antrean</span>
+                </div>
+            </div>
+            <div class="stat-card history-stat">
+                <span class="stat-icon">S</span>
+                <div class="stat-info">
+                    <span class="stat-number" id="historyCount">0</span>
+                    <span class="stat-label">Selesai</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Controls -->
+            <div class="panel control-panel">
+                <h2>Kontrol</h2>
+                
+                <!-- Add Sample Form -->
+                <div class="form-section">
+                    <h3>Tambah Sampel Baru</h3>
+                    <form id="addSampleForm">
+                        <div class="form-group" style="background: var(--bg-tertiary); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--border-color);">
+                            <label style="color: var(--accent-yellow); font-weight: 600;">Kode Sampel</label>
+                            <p style="margin: 5px 0; color: var(--accent-cyan); font-family: 'JetBrains Mono';">Auto-generated (SPL-1001, SPL-1002, ...)</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="pengirim">Nama Pengirim</label>
+                            <input type="text" id="pengirim" placeholder="PT. ABC" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jenisUji">Jenis Uji</label>
+                            <select id="jenisUji" required>
+                                <option value="">-- Pilih Jenis Uji --</option>
+                                <option value="Uji Tarik">Uji Tarik</option>
+                                <option value="Uji Keras">Uji Keras (Hardness)</option>
+                                <option value="Uji Impak">Uji Impak</option>
+                                <option value="Uji Komposisi">Uji Komposisi Kimia</option>
+                                <option value="Uji Mikro">Uji Struktur Mikro</option>
+                                <option value="Uji Korosi">Uji Korosi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jadwal">Jadwal</label>
+                            <input type="datetime-local" id="jadwal" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">+</span> Tambah ke Antrean
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <h3>Aksi</h3>
+                    <button id="processBtn" class="btn btn-success">
+                        <span class="btn-icon">>></span> Proses Sampel
+                    </button>
+                    <button id="searchBtn" class="btn btn-info">
+                        <span class="btn-icon">?</span> Cari Sampel
+                    </button>
+                    <button id="clearAllBtn" class="btn btn-danger">
+                        <span class="btn-icon">x</span> Reset Semua
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Visualization -->
+            <div class="panel visualization-panel">
+                <!-- Queue Visualization -->
+                <div class="viz-section">
+                    <h2>Queue (Antrean) - FIFO</h2>
+                    <p class="viz-description">First In, First Out - Sampel masuk dari kanan, keluar dari kiri</p>
+                    <div class="queue-container">
+                        <div class="pointer-label head-label">HEAD</div>
+                        <div class="linked-list queue-list" id="queueViz">
+                            <div class="empty-state">Antrean kosong</div>
+                        </div>
+                        <div class="pointer-label tail-label">TAIL</div>
+                    </div>
+                </div>
+
+                <!-- Stack Visualization -->
+                <div class="viz-section">
+                    <h2>Stack (Riwayat) - LIFO</h2>
+                    <p class="viz-description">Last In, First Out - Sampel terakhir diproses ada di paling atas</p>
+                    <div class="stack-container">
+                        <div class="pointer-label top-label">TOP</div>
+                        <div class="linked-list stack-list" id="stackViz">
+                            <div class="empty-state">Riwayat kosong</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="tables-section">
+            <!-- Queue Table -->
+            <div class="table-container">
+                <h2>Daftar Antrean Pengujian</h2>
+                <table id="queueTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kode</th>
+                            <th>Nama Pengirim</th>
+                            <th>Jenis Uji</th>
+                            <th>Jadwal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTableBody">
+                        <tr class="empty-row">
+                            <td colspan="5">Tidak ada sampel dalam antrean</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- History Table -->
+            <div class="table-container">
+                <h2>Riwayat Pengujian (Terbaru -> Terlama)</h2>
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kode</th>
+                            <th>Nama Pengirim</th>
+                            <th>Jenis Uji</th>
+                            <th>Jadwal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr class="empty-row">
+                            <td colspan="5">Belum ada sampel yang diproses</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Code Explanation -->
+        <div class="code-section">
+            <h2>Implementasi Linked List</h2>
+            <div class="code-tabs">
+                <button class="tab-btn active" data-tab="node">Node Structure</button>
+                <button class="tab-btn" data-tab="queue">Queue Class</button>
+                <button class="tab-btn" data-tab="stack">Stack Class</button>
+            </div>
+            <div class="code-content">
+                <pre id="codeDisplay"><code>// Node Structure - Representasi setiap sampel dalam linked list
+class SampleNode {
+    constructor(kode, pengirim, jenisUji, jadwal) {
+        this.kode = kode;        // Data: kode sampel
+        this.pengirim = pengirim; // Data: nama pengirim
+        this.jenisUji = jenisUji; // Data: jenis uji
+        this.jadwal = jadwal;     // Data: jadwal pengujian
+        this.next = null;         // Pointer ke node berikutnya
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Lab Material - Proyek Algoritma & Struktur Data</p>
+            <p class="footer-sub">Implementasi Queue & Stack menggunakan Linked List</p>
+        </footer>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cari Sampel</h2>
+            <div class="form-group">
+                <label for="searchKode">Kode Sampel</label>
+                <input type="text" id="searchKode" placeholder="Masukkan kode sampel...">
+            </div>
+            <button id="doSearchBtn" class="btn btn-primary">Cari</button>
+            <div id="searchResult" class="search-result"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="linkedlist.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

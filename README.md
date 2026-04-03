@@ -27,7 +27,9 @@ Aplikasi **console berbasis C++** untuk mengelola antrean sampel material yang m
 | **Lihat Antrean** | Menampilkan seluruh sampel yang menunggu pengujian |
 | **Riwayat Pengujian** | Menyimpan dan menampilkan sampel yang telah diproses (LIFO) |
 | **Dashboard Dinamis** | Menampilkan jumlah antrean dan sampel selesai secara real-time |
+| **Cari Sampel** | Mencari sampel dalam antrean berdasarkan kode |
 | **Animasi Loading** | Efek visual saat memproses sampel |
+| **Website Interface** | Visualisasi interaktif linked list dengan animasi (+10 poin bonus) |
 | **Cross-Platform** | Mendukung Windows dan Linux/Unix |
 
 ---
@@ -36,9 +38,10 @@ Aplikasi **console berbasis C++** untuk mengelola antrean sampel material yang m
 
 | Kategori | Teknologi |
 |----------|-----------|
-| Bahasa | C++ (C++11) |
+| Bahasa (Console) | C++ (C++11) |
+| Bahasa (Web) | HTML5, CSS3, JavaScript (ES6+) |
 | Platform | Windows / Linux / Unix |
-| Libraries | `<iostream>`, `<string>`, `<iomanip>`, `<chrono>`, `<thread>`, `<cstdlib>` |
+| Libraries C++ | `<iostream>`, `<string>`, `<iomanip>`, `<chrono>`, `<thread>`, `<cstdlib>`, `<limits>` |
 | Compiler | g++ / clang++ |
 
 ---
@@ -47,9 +50,14 @@ Aplikasi **console berbasis C++** untuk mengelola antrean sampel material yang m
 
 ```
 project-asd-ganteng/
-├── main.cpp        # Source code utama (331 lines)
+├── main.cpp        # Source code utama C++ (374 lines)
 ├── app             # Binary executable (hasil compile)
-└── README.md       # Dokumentasi proyek
+├── README.md       # Dokumentasi proyek
+└── web/            # Website Interface (+10 poin bonus)
+    ├── index.html  # Halaman utama website
+    ├── style.css   # Styling dengan tema dark mode
+    ├── linkedlist.js # Implementasi Linked List di JavaScript
+    └── app.js      # Controller aplikasi web
 ```
 
 ---
@@ -89,6 +97,69 @@ Implementasi **Linked List** dengan pointer `top` untuk operasi LIFO:
 | `showLast()` | Menampilkan sampel terakhir diproses | O(1) |
 | `showHistory()` | Menampilkan seluruh riwayat | O(n) |
 | `getSize()` | Mengembalikan jumlah riwayat | O(1) |
+
+---
+
+## Website Interface (+10 Poin Bonus)
+
+Website menyediakan visualisasi interaktif dari implementasi linked list dengan fitur:
+
+### Fitur Website
+- Visualisasi real-time Queue dan Stack dengan animasi node
+- Form interaktif untuk menambah sampel
+- Pencarian sampel dengan modal
+- Tabel data yang update otomatis
+- Code snippets untuk edukasi
+- Dark mode theme yang modern
+- Responsive design
+
+### Menjalankan Website
+
+```bash
+# Cara 1: Buka langsung di browser
+# Klik file web/index.html atau drag & drop ke browser
+
+# Cara 2: Menggunakan Live Server (VS Code extension)
+# Klik kanan pada index.html > "Open with Live Server"
+
+# Cara 3: Menggunakan Python simple server
+cd web
+python3 -m http.server 8000
+# Buka http://localhost:8000 di browser
+
+# Cara 4: Menggunakan Node.js
+npx serve web
+```
+
+### Screenshot Website
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  _          _      ____    __  __       _            _       _      │
+│ | |    __ _| |__  |  _ \  |  \/  | __ _| |_ ___ _ __(_) __ _| |     │
+│                                                                      │
+│  ┌──────────┐      ┌──────────┐                                     │
+│  │ Q  0     │      │ S  0     │    Dashboard Stats                  │
+│  │ Antrean  │      │ Selesai  │                                     │
+│  └──────────┘      └──────────┘                                     │
+│                                                                      │
+│  ┌─────────────────┐  ┌────────────────────────────────────────┐   │
+│  │  KONTROL        │  │  VISUALISASI                            │   │
+│  │                 │  │                                         │   │
+│  │  [Form Input]   │  │  Queue (FIFO):                          │   │
+│  │                 │  │  HEAD                             TAIL   │   │
+│  │  [+ Tambah]     │  │  ┌─────┐    ┌─────┐    ┌─────┐          │   │
+│  │  [>> Proses]    │  │  │SPL01│───►│SPL02│───►│SPL03│───►null  │   │
+│  │  [? Cari]       │  │  └─────┘    └─────┘    └─────┘          │   │
+│  │  [x Reset]      │  │                                         │   │
+│  │                 │  │  Stack (LIFO):                          │   │
+│  │                 │  │  TOP                                     │   │
+│  │                 │  │  ┌─────┐    ┌─────┐                      │   │
+│  │                 │  │  │SPL04│───►│SPL05│───►null              │   │
+│  └─────────────────┘  │  └─────┘    └─────┘                      │   │
+│                       └────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -431,6 +502,7 @@ app.exe
 | `[3]` | Lihat Antrean | Menampilkan tabel seluruh sampel yang sedang menunggu |
 | `[4]` | Sampel Terakhir | Menampilkan sampel yang terakhir selesai diproses |
 | `[5]` | Riwayat Lengkap | Menampilkan semua sampel yang telah diproses (terbaru di atas) |
+| `[6]` | Cari Sampel | Mencari sampel dalam antrean berdasarkan kode |
 | `[0]` | Keluar | Menutup aplikasi |
 
 ---

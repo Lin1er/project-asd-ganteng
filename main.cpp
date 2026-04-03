@@ -1,13 +1,23 @@
-#include <chrono> // Untuk durasi waktu
+#include <chrono>  // Untuk durasi waktu
 #include <cstdlib>
+#include <ctime>   // Untuk random seed
 #include <iomanip> // Untuk format tabel (setw, left)
 #include <iostream>
+#include <limits>  // Untuk numeric_limits (input validation)
 #include <string>
-#include <thread> // Untuk animasi delay
+#include <thread>  // Untuk animasi delay
 
 using namespace std;
 
+// ====== GLOBAL COUNTER FOR AUTO-GENERATION ======
+int sampleCounter = 1000;
+
 // --- UTILITIES ---
+// Generate kode sampel unik (SPL-1001, SPL-1002, dst)
+string generateSampleCode() {
+  return "SPL-" + to_string(++sampleCounter);
+}
+
 void clearScreen() {
 #ifdef _WIN32
   system("cls");
@@ -80,7 +90,38 @@ public:
     count = 0;
   }
 
+  // Destructor untuk memory management (mencegah memory leak)
+  ~QueueAntrean() {
+    while (head != nullptr) {
+      Sample *temp = head;
+      head = head->next;
+      delete temp;
+    }
+  }
+
+  bool isEmpty() { return head == nullptr; }
+
   int getSize() { return count; }
+
+  // Peek: lihat sampel pertama tanpa menghapus
+  Res<Sample *> peek() {
+    if (head == nullptr) {
+      return {false, "Antrean kosong!", nullptr};
+    }
+    return {true, "Sampel pertama dalam antrean", head};
+  }
+
+  // Cari sampel berdasarkan kode
+  Res<Sample *> search(string kode) {
+    Sample *temp = head;
+    while (temp != nullptr) {
+      if (temp->kode == kode) {
+        return {true, "Sampel ditemukan!", temp};
+      }
+      temp = temp->next;
+    }
+    return {false, "Sampel dengan kode '" + kode + "' tidak ditemukan!", nullptr};
+  }
 
   Res<void> enqueue(string kode, string pengirim, string jenisUji,
                     string jadwal) {
@@ -149,6 +190,17 @@ public:
     top = nullptr;
     count = 0;
   }
+
+  // Destructor untuk memory management
+  ~StackHistory() {
+    while (top != nullptr) {
+      Sample *temp = top;
+      top = top->next;
+      delete temp;
+    }
+  }
+
+  bool isEmpty() { return top == nullptr; }
 
   int getSize() { return count; }
 
@@ -250,9 +302,16 @@ int main() {
     cout << "  [4] " << ungu << "*" << reset
          << " Lihat Sampel Terakhir Diproses\n";
     cout << "  [5] " << ungu << "#" << reset << " Lihat Riwayat Keseluruhan\n";
+    cout << "  [6] " << cyan << "?" << reset << " Cari Sampel (by Kode)\n";
     cout << "  [0] " << merah << "x" << reset << " Keluar\n\n";
-    cout << "  Pilih menu (0-5): ";
-    cin >> pilihan;
+    cout << "  Pilih menu (0-6): ";
+    
+    // Input validation
+    while (!(cin >> pilihan)) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      cout << merah << "  [!] Input tidak valid! Masukkan angka: " << reset;
+    }
     cin.ignore();
 
     cout << "\n";
@@ -260,8 +319,9 @@ int main() {
     switch (pilihan) {
     case 1: {
       cout << cyan << "--- INPUT DATA SAMPEL BARU ---\n" << reset;
-      cout << " > Kode Sampel    : ";
-      getline(cin, kd);
+      // AUTO-GENERATE KODE SAMPEL
+      kd = generateSampleCode();
+      cout << " > Kode Sampel    : " << kuning << kd << reset << " (Auto-generated)\n";
       cout << " > Nama Pengirim  : ";
       getline(cin, prm);
       cout << " > Jenis Uji      : ";
@@ -310,13 +370,37 @@ int main() {
         cout << merah << "[!] " << res.message << reset << endl;
       break;
     }
+    case 6: {
+      cout << cyan << "--- CARI SAMPEL ---\n" << reset;
+      cout << " > Masukkan Kode Sampel: ";
+      string kodeCari;
+      getline(cin, kodeCari);
+      
+      auto res = antrean.search(kodeCari);
+      if (res.status) {
+        cout << "\n" << hijau << "[v] " << res.message << reset << "\n";
+        printTableLine();
+        cout << "| " << left << setw(10) << "Kode"
+             << " | " << setw(20) << "Nama Pengirim"
+             << " | " << setw(15) << "Jenis Uji"
+             << " | " << setw(25) << "Jadwal" << " |\n";
+        printTableLine();
+        cout << "| " << left << setw(10) << res.data->kode << " | " << setw(20)
+             << res.data->pengirim << " | " << setw(15) << res.data->jenisUji
+             << " | " << setw(25) << res.data->jadwal << " |\n";
+        printTableLine();
+      } else {
+        cout << merah << "[!] " << res.message << reset << endl;
+      }
+      break;
+    }
     case 0:
       cout << hijau
            << "Sistem ditutup. Terima kasih telah menggunakan Lab Material!"
            << reset << endl;
       break;
     default:
-      cout << merah << "[!] Pilihan tidak valid! Masukkan angka 0-5." << reset
+      cout << merah << "[!] Pilihan tidak valid! Masukkan angka 0-6." << reset
            << endl;
     }
 
