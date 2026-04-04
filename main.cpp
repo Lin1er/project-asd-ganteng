@@ -154,22 +154,30 @@ Res<string> validasiNama(const string& nama) {
 
 // Validasi jadwal: format DD/MM/YYYY
 Res<string> validasiJadwal(const string& jadwal) {
-  regex pola("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$");
-  if (!regex_match(jadwal, pola))
-    return {false, "Format jadwal harus DD/MM/YYYY (contoh: 25/12/2025).", ""};
+   regex pola("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$");
+   if (!regex_match(jadwal, pola))
+     return {false, "Format jadwal harus DD/MM/YYYY (contoh: 25/12/2025).", ""};
 
-  int dd = stoi(jadwal.substr(0, 2));
-  int mm = stoi(jadwal.substr(3, 2));
-  int yyyy = stoi(jadwal.substr(6, 4));
+   int dd = stoi(jadwal.substr(0, 2));
+   int mm = stoi(jadwal.substr(3, 2));
+   int yyyy = stoi(jadwal.substr(6, 4));
 
-  if (yyyy < 2000 || yyyy > 2100)
-    return {false, "Tahun tidak valid (2000–2100).", ""};
+   if (yyyy < 2000 || yyyy > 2100)
+     return {false, "Tahun tidak valid (2000–2100).", ""};
 
-  int maxHari[] = {0,31,29,31,30,31,30,31,31,30,31,30,31};
-  if (dd > maxHari[mm])
-    return {false, "Tanggal tidak valid untuk bulan tersebut.", ""};
+   int maxHari[] = {0,31,29,31,30,31,30,31,31,30,31,30,31};
+   if (dd > maxHari[mm])
+     return {false, "Tanggal tidak valid untuk bulan tersebut.", ""};
 
-  return {true, "OK", jadwal};
+   return {true, "OK", jadwal};
+}
+
+// Validasi kode sampel: format SPL-XXXX
+Res<string> validasiKodeSampel(const string& kode) {
+  regex pola("^SPL-[0-9]{4}$");
+  if (!regex_match(kode, pola))
+    return {false, "Format kode harus SPL-XXXX (contoh: SPL-1001).", ""};
+  return {true, "OK", kode};
 }
 
 // Baca string dengan validasi, ulangi jika gagal
@@ -309,7 +317,7 @@ public:
            << " | Pengirim: " << temp->pengirim << "\n"
            << "     Jenis Uji: " << "\033[36m" 
            << jenisUjiToString(temp->jenisUjiKode) << "\033[0m"
-           << " | Jadwal: " << temp->jadwal << "\n";
+            << " | Jadwal: " << temp->jadwal << "\n";
       temp = temp->next;
       no++;
     }
@@ -318,6 +326,9 @@ public:
     printLine('=', 75);
     return {true, ""};
   }
+
+  // Getter untuk iterasi (diperlukan untuk filtering)
+  Sample* getHead() { return head; }
 };
 
 // --- CLASS STACK ---
@@ -402,6 +413,9 @@ public:
     printLine('=', 75);
     return {true, ""};
   }
+
+  // Getter untuk iterasi (diperlukan untuk filtering)
+  Sample* getTop() { return top; }
 };
 
 // --- MAIN PROGRAM ---
@@ -450,8 +464,10 @@ int main() {
          << " Lihat Sampel Terakhir Diproses\n";
     cout << "  [5] " << ungu << "#" << reset << " Lihat Riwayat Keseluruhan\n";
     cout << "  [6] " << cyan << "?" << reset << " Cari Sampel (by Kode)\n";
+    cout << "  [7] " << cyan << "!" << reset << " Lihat Statistik Lab\n";
+    cout << "  [8] " << cyan << "@" << reset << " Filter Sampel (by Jenis Uji)\n";
     cout << "  [0] " << merah << "x" << reset << " Keluar\n\n";
-    cout << "  Pilih menu (0-6): ";
+    cout << "  Pilih menu (0-8): ";
     
     // Input validation
     while (!(cin >> pilihan)) {
@@ -549,12 +565,7 @@ int main() {
       printLine('-', 60);
       cout << "\033[0m";
       
-      string kodeCari = bacaStringValid("  Masukkan Kode Sampel: ", 
-                                        [](const string& s) {
-                                          if (s.length() > 0)
-                                            return Res<string>(true, "OK", s);
-                                          return Res<string>(false, "Kode tidak boleh kosong", "");
-                                        });
+      string kodeCari = bacaStringValid("  Masukkan Kode Sampel: ", validasiKodeSampel);
       
       auto res = antrean.search(kodeCari);
       if (res.status) {
@@ -572,12 +583,90 @@ int main() {
       }
       break;
     }
+    case 7: {
+      // Statistik Lab
+      cout << "\033[36m";
+      printLine('-', 60);
+      cout << "  STATISTIK LABORATORIUM\n";
+      printLine('-', 60);
+      cout << "\033[0m";
+      
+      int totalAntrean = antrean.getSize();
+      int totalSelesai = riwayat.getSize();
+      int totalSampel = totalAntrean + totalSelesai;
+      
+      cout << "  Total Sampel Terdaftar    : " << "\033[33m" << totalSampel << "\033[0m\n";
+      cout << "  Sampel dalam Antrean      : " << "\033[31m" << totalAntrean << "\033[0m\n";
+      cout << "  Sampel Selesai Diproses   : " << "\033[32m" << totalSelesai << "\033[0m\n";
+      
+      if (totalSampel > 0) {
+        double persenSelesai = (totalSelesai * 100.0) / totalSampel;
+        cout << "  Persentase Selesai        : " << "\033[32m" << fixed << setprecision(1) << persenSelesai << "%\033[0m\n";
+      }
+      
+      cout << "  Kode Sampel Terakhir      : " << "\033[33m" << "SPL-" << sampleCounter << "\033[0m\n";
+      printLine('-', 60);
+      break;
+    }
+    case 8: {
+      // Filter by Jenis Uji
+      cout << "\033[36m";
+      printLine('-', 60);
+      cout << "  FILTER SAMPEL BERDASARKAN JENIS UJI\n";
+      printLine('-', 60);
+      cout << "\033[0m";
+      
+      cout << "  Pilih Jenis Uji:\n";
+      for (int i = UJI_TARIK; i <= UJI_TERMAL; i++) {
+        cout << "  [" << i << "] " << jenisUjiToString(i) << "\n";
+      }
+      cout << "  [0] Kembali ke Menu\n\n";
+      
+      int jenisUjiFilter = bacaInt("  Pilih (0-10): ", 0, 10);
+      if (jenisUjiFilter == 0) break;
+      
+      cout << "\n  Sampel dengan Uji: " << "\033[36m" << jenisUjiToString(jenisUjiFilter) << "\033[0m\n";
+      printLine('-', 60);
+      
+      // Filter from both queue and history
+      int found = 0;
+      
+      // Check in antrian (queue)
+      auto curr = antrean.getHead();
+      while (curr != nullptr) {
+        if (curr->jenisUjiKode == jenisUjiFilter) {
+          cout << "  [ANTREAN] " << curr->kode << " - Pengirim: " << curr->pengirim 
+               << " (Jadwal: " << curr->jadwal << ")\n";
+          found++;
+        }
+        curr = curr->next;
+      }
+      
+      // Check in riwayat (history/stack)
+      auto histCurr = riwayat.getTop();
+      while (histCurr != nullptr) {
+        if (histCurr->jenisUjiKode == jenisUjiFilter) {
+          cout << "  [SELESAI] " << histCurr->kode << " - Pengirim: " << histCurr->pengirim 
+               << " (Jadwal: " << histCurr->jadwal << ")\n";
+          found++;
+        }
+        histCurr = histCurr->next;
+      }
+      
+      if (found == 0) {
+        cout << "  \033[33m[!] Tidak ada sampel dengan jenis uji ini.\033[0m\n";
+      } else {
+        cout << "  \033[32m✓ Total sampel ditemukan: " << found << "\033[0m\n";
+      }
+      printLine('-', 60);
+      break;
+    }
     case 0:
       cout << "\033[32m  Keluar dari program. Terima kasih!\033[0m\n";
       break;
 
     default:
-      cout << "\033[31m  [!] Pilihan tidak valid! Masukkan angka 0-6.\033[0m\n";
+      cout << "\033[31m  [!] Pilihan tidak valid! Masukkan angka 0-8.\033[0m\n";
     }
 
     if (pilihan != 0) {

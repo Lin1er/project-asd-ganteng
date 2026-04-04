@@ -26,361 +26,312 @@ const elements = {
     // Stats
     queueCount: document.getElementById('queueCount'),
     historyCount: document.getElementById('historyCount'),
+    totalCount: document.getElementById('totalCount'),
     
-    // Visualization
-    queueViz: document.getElementById('queueViz'),
-    stackViz: document.getElementById('stackViz'),
-    
-    // Tables
-    queueTableBody: document.getElementById('queueTableBody'),
-    historyTableBody: document.getElementById('historyTableBody'),
-    
-    // Code
-    codeDisplay: document.getElementById('codeDisplay'),
-    tabBtns: document.querySelectorAll('.tab-btn'),
+    // Lists
+    queueList: document.getElementById('queueList'),
+    historyList: document.getElementById('historyList'),
     
     // Modal
     searchModal: document.getElementById('searchModal'),
-    searchKode: document.getElementById('searchKode'),
-    doSearchBtn: document.getElementById('doSearchBtn'),
-    searchResult: document.getElementById('searchResult'),
-    closeModal: document.querySelector('.close'),
+    searchInput: document.getElementById('searchInput'),
+    searchResults: document.getElementById('searchResults'),
     
-    // Toast
-    toast: document.getElementById('toast')
+    confirmModal: document.getElementById('confirmModal'),
+    confirmMessage: document.getElementById('confirmMessage'),
+    confirmYes: document.getElementById('confirmYes'),
+    confirmNo: document.getElementById('confirmNo')
 };
 
-// ====== UTILITY FUNCTIONS ======
+// ====== HELPER FUNCTIONS ======
+function jenisUjiToString(kode) {
+    const uji = {
+        1: 'Uji Tarik',
+        2: 'Uji Tekan',
+        3: 'Uji Kekerasan',
+        4: 'Uji Impak',
+        5: 'Uji Lentur',
+        6: 'Uji Kelelahan',
+        7: 'Uji Korosi',
+        8: 'Metalografi',
+        9: 'Analisis Komposisi',
+        10: 'Analisis Termal'
+    };
+    return uji[kode] || 'Unknown';
+}
 
-// Format tanggal untuk display
-function formatDate(dateString) {
-    const options = { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric',
+function formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return 'N/A';
+    const date = new Date(dateTimeStr);
+    return date.toLocaleString('id-ID', { 
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
         hour: '2-digit',
         minute: '2-digit'
+    });
+}
+
+function showModal(modal) {
+    modal.classList.add('open');
+}
+
+function hideModal(modal) {
+    modal.classList.remove('open');
+}
+
+function showConfirm(message, onConfirm) {
+    elements.confirmMessage.textContent = message;
+    showModal(elements.confirmModal);
+    
+    const handleYes = () => {
+        hideModal(elements.confirmModal);
+        elements.confirmYes.removeEventListener('click', handleYes);
+        elements.confirmNo.removeEventListener('click', handleNo);
+        onConfirm();
     };
-    return new Date(dateString).toLocaleDateString('id-ID', options);
-}
-
-// Tampilkan toast notification
-function showToast(message, type = 'info') {
-    elements.toast.textContent = message;
-    elements.toast.className = `toast ${type} show`;
     
-    setTimeout(() => {
-        elements.toast.classList.remove('show');
-    }, 3000);
+    const handleNo = () => {
+        hideModal(elements.confirmModal);
+        elements.confirmYes.removeEventListener('click', handleYes);
+        elements.confirmNo.removeEventListener('click', handleNo);
+    };
+    
+    elements.confirmYes.addEventListener('click', handleYes);
+    elements.confirmNo.addEventListener('click', handleNo);
 }
 
-// ====== UPDATE UI FUNCTIONS ======
-
-// Update statistik dashboard
+// ====== RENDER FUNCTIONS ======
 function updateStats() {
-    elements.queueCount.textContent = antrean.getSize();
-    elements.historyCount.textContent = riwayat.getSize();
+    const queueSize = antrean.getSize();
+    const historySize = riwayat.getSize();
     
-    // Animate number change
-    elements.queueCount.style.transform = 'scale(1.2)';
-    elements.historyCount.style.transform = 'scale(1.2)';
-    
-    setTimeout(() => {
-        elements.queueCount.style.transform = 'scale(1)';
-        elements.historyCount.style.transform = 'scale(1)';
-    }, 200);
+    elements.queueCount.textContent = queueSize;
+    elements.historyCount.textContent = historySize;
+    elements.totalCount.textContent = queueSize + historySize;
 }
 
-// Render Queue Visualization
-function renderQueueViz() {
-    const queueArray = antrean.toArray();
+function renderQueueList() {
+    const items = [];
+    let curr = antrean.getHead();
     
-    if (queueArray.length === 0) {
-        elements.queueViz.innerHTML = '<div class="empty-state">Antrean kosong</div>';
+    if (!curr) {
+        elements.queueList.innerHTML = '<p class="empty-state">Belum ada sampel dalam antrean</p>';
         return;
     }
     
-    let html = '';
-    queueArray.forEach((sample, index) => {
-        html += `
-            <div class="node">
-                <div class="node-box" title="${sample.pengirim} - ${sample.jenisUji}">
-                    <div class="node-kode">${sample.kode}</div>
-                    <div class="node-pengirim">${sample.pengirim}</div>
-                    <div class="node-jenis">${sample.jenisUji}</div>
+    while (curr) {
+        const html = `
+            <div class="list-item">
+                <div>
+                    <div class="list-item-code">${curr.kode}</div>
+                    <div class="list-item-info">
+                        <div class="list-item-sender">${curr.pengirim}</div>
+                        <div class="list-item-test">${jenisUjiToString(curr.jenisUjiKode)}</div>
+                        <div class="list-item-schedule">${formatDateTime(curr.jadwal)}</div>
+                    </div>
                 </div>
-                ${index < queueArray.length - 1 ? '<span class="node-arrow">→</span>' : '<span class="node-arrow">→</span><span class="node-null">null</span>'}
+                <div class="list-item-badge">No. ${curr.noAntrean}</div>
             </div>
         `;
-    });
+        items.push(html);
+        curr = curr.next;
+    }
     
-    elements.queueViz.innerHTML = html;
+    elements.queueList.innerHTML = items.join('');
 }
 
-// Render Stack Visualization
-function renderStackViz() {
-    const stackArray = riwayat.toArray();
+function renderHistoryList() {
+    const items = [];
+    let curr = riwayat.getTop();
     
-    if (stackArray.length === 0) {
-        elements.stackViz.innerHTML = '<div class="empty-state">Riwayat kosong</div>';
+    if (!curr) {
+        elements.historyList.innerHTML = '<p class="empty-state">Belum ada sampel yang selesai</p>';
         return;
     }
     
-    let html = '';
-    stackArray.forEach((sample, index) => {
-        html += `
-            <div class="node">
-                <div class="node-box" title="${sample.pengirim} - ${sample.jenisUji}" style="border-color: ${index === 0 ? '#a371f7' : ''}">
-                    <div class="node-kode">${sample.kode}</div>
-                    <div class="node-pengirim">${sample.pengirim}</div>
-                    <div class="node-jenis">${sample.jenisUji}</div>
+    while (curr) {
+        const html = `
+            <div class="list-item">
+                <div>
+                    <div class="list-item-code">${curr.kode}</div>
+                    <div class="list-item-info">
+                        <div class="list-item-sender">${curr.pengirim}</div>
+                        <div class="list-item-test">${jenisUjiToString(curr.jenisUjiKode)}</div>
+                        <div class="list-item-schedule">${formatDateTime(curr.jadwal)}</div>
+                    </div>
                 </div>
-                ${index < stackArray.length - 1 ? '<span class="node-arrow">→</span>' : '<span class="node-arrow">→</span><span class="node-null">null</span>'}
+                <div class="list-item-badge" style="background: var(--accent-green);">✓ Selesai</div>
             </div>
         `;
-    });
-    
-    elements.stackViz.innerHTML = html;
-}
-
-// Render Queue Table
-function renderQueueTable() {
-    const queueArray = antrean.toArray();
-    
-    if (queueArray.length === 0) {
-        elements.queueTableBody.innerHTML = `
-            <tr class="empty-row">
-                <td colspan="5">Tidak ada sampel dalam antrean</td>
-            </tr>
-        `;
-        return;
+        items.push(html);
+        curr = curr.next;
     }
     
-    let html = '';
-    queueArray.forEach((sample, index) => {
-        html += `
-            <tr>
-                <td>${index + 1}</td>
-                <td><strong>${sample.kode}</strong></td>
-                <td>${sample.pengirim}</td>
-                <td>${sample.jenisUji}</td>
-                <td>${formatDate(sample.jadwal)}</td>
-            </tr>
-        `;
-    });
-    
-    elements.queueTableBody.innerHTML = html;
-}
-
-// Render History Table
-function renderHistoryTable() {
-    const historyArray = riwayat.toArray();
-    
-    if (historyArray.length === 0) {
-        elements.historyTableBody.innerHTML = `
-            <tr class="empty-row">
-                <td colspan="5">Belum ada sampel yang diproses</td>
-            </tr>
-        `;
-        return;
-    }
-    
-    let html = '';
-    historyArray.forEach((sample, index) => {
-        html += `
-            <tr>
-                <td>${index + 1}</td>
-                <td><strong>${sample.kode}</strong></td>
-                <td>${sample.pengirim}</td>
-                <td>${sample.jenisUji}</td>
-                <td>${formatDate(sample.jadwal)}</td>
-            </tr>
-        `;
-    });
-    
-    elements.historyTableBody.innerHTML = html;
-}
-
-// Update all UI components
-function updateUI() {
-    updateStats();
-    renderQueueViz();
-    renderStackViz();
-    renderQueueTable();
-    renderHistoryTable();
+    elements.historyList.innerHTML = items.join('');
 }
 
 // ====== EVENT HANDLERS ======
-
-// Handle form submission - Add new sample
-elements.addSampleForm.addEventListener('submit', (e) => {
+function handleAddSample(e) {
     e.preventDefault();
     
     const pengirim = elements.pengirim.value.trim();
-    const jenisUjiKode = parseInt(elements.jenisUji.value);
+    const jenisUji = parseInt(elements.jenisUji.value);
     const jadwal = elements.jadwal.value;
     
-    // Validasi input (kode tidak perlu, auto-generated!)
-    if (!pengirim || !jenisUjiKode || !jadwal) {
-        showToast('Mohon lengkapi semua field!', 'error');
+    if (!pengirim || !jenisUji || !jadwal) {
+        alert('Semua field harus diisi!');
         return;
     }
     
-    // Enqueue sampel baru (kode auto-generated di constructor)
-    const result = antrean.enqueue(pengirim, jenisUjiKode, jadwal);
+    // Validate name (minimal 3 karakter, hanya huruf, spasi, dash)
+    if (pengirim.length < 3) {
+        alert('Nama pengirim minimal 3 karakter');
+        return;
+    }
     
-    if (result.status) {
-        showToast(`${result.message}`, 'success');
-        
-        // Reset form
+    if (!/^[a-zA-Z\s\-]+$/.test(pengirim)) {
+        alert('Nama pengirim hanya boleh mengandung huruf, spasi, dan dash');
+        return;
+    }
+    
+    const res = antrean.enqueue(undefined, pengirim, jenisUji, jadwal);
+    
+    if (res.status) {
+        updateStats();
+        renderQueueList();
         elements.addSampleForm.reset();
-        
-        // Update UI
-        updateUI();
+        alert(`Sampel berhasil ditambahkan: ${res.message}`);
+    } else {
+        alert('Gagal menambahkan sampel: ' + res.message);
     }
-});
+}
 
-// Handle process button - Dequeue and push to stack
-elements.processBtn.addEventListener('click', async () => {
-    if (antrean.isEmpty()) {
-        showToast('Antrean kosong, tidak ada sampel untuk diproses!', 'error');
+function handleProcessSample() {
+    const res = antrean.dequeue();
+    
+    if (!res.status) {
+        alert(res.message);
         return;
     }
     
-    // Disable button during processing
-    elements.processBtn.disabled = true;
-    elements.processBtn.innerHTML = '<span class="btn-icon">...</span> Memproses...';
-    
-    // Animate first node
-    const firstNode = elements.queueViz.querySelector('.node-box');
-    if (firstNode) {
-        firstNode.classList.add('node-processing');
-    }
-    
-    // Delay untuk animasi
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Dequeue dari antrean
-    const dequeueResult = antrean.dequeue();
-    
-    if (dequeueResult.status) {
-        // Push ke stack riwayat
-        const pushResult = riwayat.push(dequeueResult.data);
-        
-        showToast(`${dequeueResult.message} ${pushResult.message}`, 'success');
-        
-        // Update UI
-        updateUI();
-    }
-    
-    // Re-enable button
-    elements.processBtn.disabled = false;
-    elements.processBtn.innerHTML = '<span class="btn-icon">>></span> Proses Sampel';
-});
+    const sample = res.data;
+    showConfirm(`Proses sampel ${sample.kode}?`, () => {
+        const pushRes = riwayat.push(sample);
+        if (pushRes.status) {
+            updateStats();
+            renderQueueList();
+            renderHistoryList();
+            alert(`Sampel ${sample.kode} selesai diproses`);
+        }
+    });
+}
 
-// Handle search button - Open modal
-elements.searchBtn.addEventListener('click', () => {
-    elements.searchModal.classList.add('show');
-    elements.searchKode.focus();
-    elements.searchResult.classList.remove('show');
-});
+function handleSearch() {
+    showModal(elements.searchModal);
+    elements.searchInput.focus();
+    elements.searchInput.value = '';
+    elements.searchResults.innerHTML = '';
+}
 
-// Handle search execution
-elements.doSearchBtn.addEventListener('click', () => {
-    const kode = elements.searchKode.value.trim();
+function handleSearchInput(e) {
+    const kode = e.target.value.trim();
     
     if (!kode) {
-        showToast('Masukkan kode sampel untuk mencari!', 'error');
+        elements.searchResults.innerHTML = '';
         return;
     }
     
-    const result = antrean.search(kode);
+    // Validate format SPL-XXXX
+    if (!/^SPL-[0-9]{4}$/.test(kode)) {
+        elements.searchResults.innerHTML = '<p style="color: var(--accent-red);">Format: SPL-XXXX</p>';
+        return;
+    }
     
-    elements.searchResult.classList.add('show');
+    // Search in queue
+    let found = false;
+    let curr = antrean.getHead();
     
-    if (result.status) {
-        elements.searchResult.classList.remove('not-found');
-        elements.searchResult.classList.add('found');
-        elements.searchResult.innerHTML = `
-            <strong style="color: var(--accent-green);">Ditemukan!</strong>
-            <div style="margin-top: 10px;">
-                <p><strong>Kode:</strong> ${result.data.kode}</p>
-                <p><strong>Pengirim:</strong> ${result.data.pengirim}</p>
-                <p><strong>Jenis Uji:</strong> ${result.data.jenisUji}</p>
-                <p><strong>Jadwal:</strong> ${formatDate(result.data.jadwal)}</p>
-                <p><strong>Posisi dalam antrean:</strong> ${result.position}</p>
-            </div>
-        `;
-    } else {
-        elements.searchResult.classList.remove('found');
-        elements.searchResult.classList.add('not-found');
-        elements.searchResult.innerHTML = `
-            <strong style="color: var(--accent-red);">Tidak Ditemukan</strong>
-            <p style="margin-top: 10px;">${result.message}</p>
-        `;
+    while (curr) {
+        if (curr.kode === kode) {
+            const html = `
+                <div class="search-result-item">
+                    <div class="search-result-code">${curr.kode}</div>
+                    <div class="search-result-info">
+                        <strong>${curr.pengirim}</strong> | ${jenisUjiToString(curr.jenisUjiKode)}
+                        <br>Jadwal: ${formatDateTime(curr.jadwal)}
+                        <br><span style="color: var(--accent-cyan);">Status: Dalam Antrean (No. ${curr.noAntrean})</span>
+                    </div>
+                </div>
+            `;
+            elements.searchResults.innerHTML = html;
+            found = true;
+            break;
+        }
+        curr = curr.next;
     }
-});
-
-// Handle search on enter key
-elements.searchKode.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        elements.doSearchBtn.click();
+    
+    // Search in history
+    if (!found) {
+        curr = riwayat.getTop();
+        while (curr) {
+            if (curr.kode === kode) {
+                const html = `
+                    <div class="search-result-item">
+                        <div class="search-result-code">${curr.kode}</div>
+                        <div class="search-result-info">
+                            <strong>${curr.pengirim}</strong> | ${jenisUjiToString(curr.jenisUjiKode)}
+                            <br>Jadwal: ${formatDateTime(curr.jadwal)}
+                            <br><span style="color: var(--accent-green);">Status: ✓ Selesai</span>
+                        </div>
+                    </div>
+                `;
+                elements.searchResults.innerHTML = html;
+                found = true;
+                break;
+            }
+            curr = curr.next;
+        }
     }
-});
-
-// Handle modal close
-elements.closeModal.addEventListener('click', () => {
-    elements.searchModal.classList.remove('show');
-    elements.searchKode.value = '';
-    elements.searchResult.classList.remove('show');
-});
-
-// Close modal on outside click
-elements.searchModal.addEventListener('click', (e) => {
-    if (e.target === elements.searchModal) {
-        elements.searchModal.classList.remove('show');
+    
+    if (!found) {
+        elements.searchResults.innerHTML = '<p style="color: var(--accent-red);">Sampel tidak ditemukan</p>';
     }
-});
+}
 
-// Handle clear all button
-elements.clearAllBtn.addEventListener('click', () => {
-    if (confirm('Apakah Anda yakin ingin menghapus semua data?')) {
-        antrean.clear();
-        riwayat.clear();
-        updateUI();
-        showToast('Semua data telah direset!', 'info');
-    }
-});
+function handleClearAll() {
+    showConfirm('Hapus semua data? Tindakan ini tidak dapat dibatalkan.', () => {
+        location.reload();
+    });
+}
 
-// Handle code tabs
-elements.tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active from all
-        elements.tabBtns.forEach(b => b.classList.remove('active'));
-        // Add active to clicked
-        btn.classList.add('active');
-        
-        // Update code display
-        const tab = btn.dataset.tab;
-        elements.codeDisplay.innerHTML = `<code>${codeSnippets[tab]}</code>`;
+// ====== EVENT LISTENERS ======
+elements.addSampleForm.addEventListener('submit', handleAddSample);
+elements.processBtn.addEventListener('click', handleProcessSample);
+elements.searchBtn.addEventListener('click', handleSearch);
+elements.clearAllBtn.addEventListener('click', handleClearAll);
+
+// Search input real-time
+elements.searchInput.addEventListener('input', handleSearchInput);
+
+// Close modals
+document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const modal = e.target.closest('.modal');
+        hideModal(modal);
     });
 });
 
-// ====== INITIALIZE ======
-document.addEventListener('DOMContentLoaded', () => {
-    // Set default datetime to now
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    elements.jadwal.value = now.toISOString().slice(0, 16);
-    
-    // Add some demo data
-    antrean.enqueue('PT. Baja Utama', 1, '2024-03-15T09:00');
-    antrean.enqueue('CV. Metal Jaya', 3, '2024-03-15T10:30');
-    antrean.enqueue('PT. Steel Indo', 4, '2024-03-15T14:00');
-    
-    // Initial UI update
-    updateUI();
-    
-    console.log('Lab Material - Sistem Antrean Sampel Laboratorium');
-    console.log('Linked List Implementation Ready!');
+// Close modal on background click
+[elements.searchModal, elements.confirmModal].forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideModal(modal);
+        }
+    });
 });
+
+// ====== INITIALIZATION ======
+updateStats();
+renderQueueList();
+renderHistoryList();

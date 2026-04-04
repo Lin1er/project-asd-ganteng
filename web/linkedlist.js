@@ -234,6 +234,11 @@ class QueueAntrean {
         this.tail = null;
         this.count = 0;
     }
+
+    // Getter untuk head (untuk iterasi)
+    getHead() {
+        return this.head;
+    }
 }
 
 // ====== STACK CLASS (LIFO - Last In First Out) ======
@@ -354,6 +359,11 @@ class StackHistory {
     clear() {
         this.top = null;
         this.count = 0;
+    }
+
+    // Getter untuk top (untuk iterasi)
+    getTop() {
+        return this.top;
     }
 }
 
