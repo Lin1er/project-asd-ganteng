@@ -1,66 +1,50 @@
-# Lab Material - Sistem Antrean Sampel Laboratorium
+# Lab Material Queue Project
 
-Aplikasi C++ console dan web (integrasi WebAssembly) untuk pengelolaan antrean dan riwayat sampel laboratorium. Visualisasi antrian dan stack dengan UI interaktif modern.
+## GitHub Pages Deployment Guide
+
+### Structure
+- All static web files for GitHub Pages deployment are in the `web/` folder:
+  - `web/index.html`
+  - `web/app.js`
+  - `web/app.wasm`
+  - `web/style.css`
+  - `web/lab.js` (if used)
+
+### To deploy this site via GitHub Pages:
+
+1. **Copy all content of `web/` folder to a new folder named `docs/` at the root of this repo.**
+
+    ```sh
+    cp -r web docs
+    ```
+    *(Or you can move, as long as all is duplicated there)*
+
+2. **Push your changes.**
+
+3. **In GitHub** (repo Settings > Pages):
+    - Set Pages source to `main` (branch), `/docs` folder
+    - Save. Wait for the deployment (about 1 min)
+    - Your app will be live at: `https://<username>.github.io/<repo-name>/`
+
+4. **Edit resource links in `index.html` if needed:**
+    - If you use folders/subfolder, make sure all `src`, `href` are relative (e.g. `app.js`, **not** `/app.js`)
+    - Typical config is already using relative path — see source
+
+---
+### Automation (optional)
+- You can add a GitHub Actions workflow to auto-build and copy `web/*` to `docs/` if you want continuous deploy.
+- Or just manually copy and commit once after updating web.
+
+---
+### Notes
+- GitHub Pages can serve only static files. WASM/JS apps are fully supported.
+- If you use any fetch() or AJAX, the path must be relative (`./app.wasm`), no CORS error, not refer backend API unless public.
+- Do NOT put C++/main.cpp/backend/server here — just web build results.
+- If you want the root path (not /docs/) as the homepage, you can move web content to root and set source as `/ (root)`.
 
 ---
 
-## Build & Instalasi
-
-### Prasyarat
-- Linux: g++, Python 3
-- Windows: g++ (MinGW/WSL), Python 3
-- (Untuk WebAssembly/website-dev) Emscripten: https://emscripten.org/
-
-### Build Otomatis
-Gunakan Makefile (build otomatis deteksi OS & artefak):
-
-    # Build console app (Linux)
-    make
-    # Build Windows binary (di Linux/WSL atau MinGW, hasil app.exe)
-    make win
-    # Build WebAssembly artefak/Web
-    make wasm
-
-### Clean (hapus artefak build):
-
-    make clean
-
----
-
-## Menjalankan
-
-### Aplikasi Console (Terminal)
-
-    # Linux/Unix
-    ./app
-    # Windows
-    app.exe
-
-### Website
-
-    # Masuk folder web dan jalankan server
-    cd web
-    python3 -m http.server 8000
-    # Buka browser http://localhost:8000
-
----
-
-## UX: Website Ramah Orang Tua & Anak Muda (V2)
-- Tampilan ringkas, tulisan jelas, navigasi 1 klik
-- Label tombol & instruksi menggunakan Bahasa Indonesia komunikatif
-- Warna kontras tinggi, teks besar, animasi loading friendly
-- Aksesibel: tombol besar, form ringkas, instruksi simpel
-- Cocok untuk operator laboratorium senior & mahasiswa
-
----
-
-## Source Kode dan Pengembangan
-- Kode utama: main.cpp (console), web/app.js + web/index.html (frontend)
-- Build WASM dari main.cpp (mode web)
-- Lihat Makefile untuk detail build lintas platform
-- Kompatibel Linux dan Windows/MinGW
-
----
-
-## Catatan / Lisensi
-Proyek edukasi, bebas modifikasi.
+## Quick one-liner:
+```sh
+rm -rf docs && cp -r web docs && git add docs && git commit -m "docs: deploy to github pages" && git push
+```
