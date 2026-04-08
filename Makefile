@@ -11,7 +11,7 @@ wasm:
 	if ! [ -x "$$EMCC_BIN" ]; then \
 	  echo '[WASM] Error: Emscripten (emcc) tidak ditemukan di PATH.'; exit 44; \
 	fi; \
-	$$EMCC_BIN -std=c++17 -O2 main.cpp -s WASM=1 -o web/app.js
+	$$EMCC_BIN -std=c++17 -O2 web/lab_wasm.cpp --bind -s MALLOC=emmalloc -s WASM=1 -o web/app.js
 
 clean:
 	rm -f app app.exe web/app.js web/app.wasm

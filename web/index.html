@@ -1,136 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lab Material - Sistem Antrean Sampel</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <!-- Loading Screen -->
     <div id="loading" class="loading">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Loading WebAssembly Module...</p>
-        </div>
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Loading WebAssembly Module...</p>
+      </div>
     </div>
 
     <!-- Main App -->
     <div id="app" class="app hidden">
-        <!-- Header -->
-        <header class="header">
-            <h1>Lab Material (Antrean Laboratorium)</h1>
-<p class="tagline" style="font-size:1.15em;margin-bottom:8px;">Antrean & Riwayat Sampel - Mudah Dipakai Siapapun</p>
-<span class="badge">Akses Mudah & Cepat - Cocok untuk Operator Senior hingga Mahasiswa</span>
-        </header>
+      <!-- Header -->
+      <header class="header">
+        <h1>Lab Material (Antrean Laboratorium)</h1>
+        <p class="tagline" style="font-size: 1.15em; margin-bottom: 8px">
+          Antrean & Riwayat Sampel - Laboratorium Material Testing
+        </p>
+      </header>
 
-        <!-- Stats -->
-        <section class="stats">
-            <div class="stat-card">
-                <span class="stat-value" id="queueCount">0</span>
-                <span class="stat-label">Antrean</span>
+      <!-- Stats -->
+      <section class="stats">
+        <div class="stat-card">
+          <span class="stat-value" id="queueCount">0</span>
+          <span class="stat-label">Antrean</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="historyCount">0</span>
+          <span class="stat-label">Selesai</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="totalCount">0</span>
+          <span class="stat-label">Total</span>
+        </div>
+      </section>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Left: Form & Actions -->
+        <aside class="sidebar">
+          <!-- Add Form -->
+          <div class="card">
+            <h2>Tambah Sampel Baru</h2>
+            <p style="font-size: 0.95em; color: #ddd; margin-bottom: 8px">
+              Isi identitas pengirim & uji, <b>cukup 3 langkah</b> lalu tekan
+              <b>Tambah ke Antrean</b>
+            </p>
+            <form id="addForm">
+              <div class="form-group">
+                <label for="pengirim"
+                  >Nama Pengirim
+                  <span style="color: #ef4444; font-size: 1.1em">*</span></label
+                >
+                <input
+                  type="text"
+                  id="pengirim"
+                  placeholder="PT. ABC Industri"
+                  required
+                  minlength="3"
+                />
+              </div>
+              <div class="form-group">
+                <label for="jenisUji"
+                  >Jenis Uji<span style="color: #ef4444; font-size: 1.1em"
+                    >*</span
+                  ></label
+                >
+                <select id="jenisUji" required>
+                  <option value="">Pilih jenis uji...</option>
+                  <option value="1">Uji Tarik</option>
+                  <option value="2">Uji Tekan</option>
+                  <option value="3">Uji Kekerasan</option>
+                  <option value="4">Uji Impak</option>
+                  <option value="5">Uji Lentur</option>
+                  <option value="6">Uji Kelelahan</option>
+                  <option value="7">Uji Korosi</option>
+                  <option value="8">Metalografi</option>
+                  <option value="9">Analisis Komposisi</option>
+                  <option value="10">Analisis Termal</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="jadwal"
+                  >Tanggal Uji<span style="color: #ef4444; font-size: 1.1em"
+                    >*</span
+                  ></label
+                >
+                <input type="date" id="jadwal" required />
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="font-size: 1.2em; padding: 16px 0"
+              >
+                + Tambah ke Antrean (1x klik)
+              </button>
+            </form>
+          </div>
+
+          <!-- Actions -->
+          <div class="card">
+            <h2>Aksi & Kontrol Cepat</h2>
+            <div class="actions" style="gap: 16px">
+              <button
+                id="btnProcess"
+                class="btn btn-success"
+                style="font-size: 1.15em; padding: 14px 0; margin-bottom: 4px"
+              >
+                ➡️ Proses Sampel Berikutnya
+              </button>
+              <button
+                id="btnSearch"
+                class="btn btn-secondary"
+                style="font-size: 1.1em; padding: 13px 0; margin-bottom: 4px"
+              >
+                🔍 Cari Berdasar Kode
+              </button>
+              <button
+                id="btnReset"
+                class="btn btn-danger"
+                style="font-size: 1.1em; padding: 13px 0"
+              >
+                🗑 Reset/Hapus Semua Data
+              </button>
             </div>
-            <div class="stat-card">
-                <span class="stat-value" id="historyCount">0</span>
-                <span class="stat-label">Selesai</span>
+          </div>
+        </aside>
+
+        <!-- Right: Lists -->
+        <div class="content">
+          <!-- Queue -->
+          <div class="card">
+            <h2>
+              Daftar Sampel dalam Antrean
+              <span class="count" id="queueBadge">0</span>
+            </h2>
+            <p style="font-size: 0.92em; color: #aaa">
+              Klik 'Proses Sampel' bila sudah siap uji. Daftar dibawah otomatis
+              update!
+            </p>
+            <div id="queueList" class="list">
+              <p class="empty">Belum ada sampel dalam antrean</p>
             </div>
-            <div class="stat-card">
-                <span class="stat-value" id="totalCount">0</span>
-                <span class="stat-label">Total</span>
+          </div>
+
+          <!-- History -->
+          <div class="card">
+            <h2>
+              Riwayat Sampel Selesai
+              <span class="count" id="historyBadge">0</span>
+            </h2>
+            <p style="font-size: 0.92em; color: #aaa">
+              Sampel yang sudah diproses & selesai tercatat di bawah.
+            </p>
+            <div id="historyList" class="list">
+              <p class="empty">Belum ada sampel yang selesai diproses</p>
             </div>
-        </section>
+          </div>
+        </div>
+      </main>
 
-        <!-- Main Content -->
-        <main class="main">
-            <!-- Left: Form & Actions -->
-            <aside class="sidebar">
-                <!-- Add Form -->
-                <div class="card">
-                    <h2>Tambah Sampel Baru</h2>
-<p style="font-size:0.95em;color:#ddd;margin-bottom:8px">Isi identitas pengirim & uji, <b>cukup 3 langkah</b> lalu tekan <b>Tambah ke Antrean</b></p>
-                    <form id="addForm">
-                        <div class="form-group">
-                            <label for="pengirim">Nama Pengirim <span style='color:#ef4444;font-size:1.1em'>*</span></label>
-                            <input type="text" id="pengirim" placeholder="PT. ABC Industri" required minlength="3">
-                        </div>
-                        <div class="form-group">
-                            <label for="jenisUji">Jenis Uji<span style='color:#ef4444;font-size:1.1em'>*</span></label>
-                            <select id="jenisUji" required>
-                                <option value="">Pilih jenis uji...</option>
-                                <option value="1">Uji Tarik</option>
-                                <option value="2">Uji Tekan</option>
-                                <option value="3">Uji Kekerasan</option>
-                                <option value="4">Uji Impak</option>
-                                <option value="5">Uji Lentur</option>
-                                <option value="6">Uji Kelelahan</option>
-                                <option value="7">Uji Korosi</option>
-                                <option value="8">Metalografi</option>
-                                <option value="9">Analisis Komposisi</option>
-                                <option value="10">Analisis Termal</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="jadwal">Tanggal Uji<span style='color:#ef4444;font-size:1.1em'>*</span></label>
-                            <input type="date" id="jadwal" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="font-size:1.2em;padding:16px 0;">+ Tambah ke Antrean (1x klik)</button>
-                    </form>
-                </div>
-
-                <!-- Actions -->
-                <div class="card">
-                    <h2>Aksi & Kontrol Cepat</h2>
-                    <div class="actions" style="gap:16px">
-                        <button id="btnProcess" class="btn btn-success" style="font-size:1.15em;padding:14px 0;margin-bottom:4px;">➡️  Proses Sampel Berikutnya</button>
-                        <button id="btnSearch" class="btn btn-secondary" style="font-size:1.1em;padding:13px 0;margin-bottom:4px;">🔍 Cari Berdasar Kode</button>
-                        <button id="btnReset" class="btn btn-danger" style="font-size:1.1em;padding:13px 0;">🗑 Reset/Hapus Semua Data</button>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Right: Lists -->
-            <div class="content">
-                <!-- Queue -->
-                <div class="card">
-                    <h2>Daftar Sampel dalam Antrean <span class="count" id="queueBadge">0</span></h2>
-<p style="font-size:0.92em;color:#aaa;">Klik 'Proses Sampel' bila sudah siap uji. Daftar dibawah otomatis update!</p>
-                    <div id="queueList" class="list">
-                        <p class="empty">Belum ada sampel dalam antrean</p>
-                    </div>
-                </div>
-
-                <!-- History -->
-                <div class="card">
-                    <h2>Riwayat Sampel Selesai <span class="count" id="historyBadge">0</span></h2>
-<p style="font-size:0.92em;color:#aaa;">Sampel yang sudah diproses & selesai tercatat di bawah.</p>
-                    <div id="historyList" class="list">
-                        <p class="empty">Belum ada sampel yang selesai diproses</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Linked List Implementation &bull; Queue (FIFO) & Stack (LIFO)</p>
-        </footer>
+      <!-- Footer -->
+      <footer class="footer">
+        <p>Linked List Implementation &bull; Queue (FIFO) & Stack (LIFO)</p>
+      </footer>
     </div>
 
     <!-- Search Modal -->
     <div id="searchModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Cari Sampel (berdasarkan kode)</h3>
-<p style="color:#aaa;font-size:0.95em;margin-bottom:8px">Masukkan kode misal: SPL-1001 lalu pencet Enter</p>
-                <button class="modal-close" data-close>&times;</button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="searchInput" placeholder="Masukkan kode (SPL-1001)" class="search-input">
-                <div id="searchResult" class="search-result"></div>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Cari Sampel (berdasarkan kode)</h3>
+          <p style="color: #aaa; font-size: 0.95em; margin-bottom: 8px">
+            Masukkan kode misal: SPL-1001 lalu pencet Enter
+          </p>
+          <button class="modal-close" data-close>&times;</button>
         </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Masukkan kode (SPL-1001)"
+            class="search-input"
+          />
+          <div id="searchResult" class="search-result"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Toast -->
@@ -139,5 +205,5 @@
     <!-- Scripts -->
     <script src="lab.js"></script>
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
