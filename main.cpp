@@ -1,12 +1,16 @@
-#include <chrono>  // Untuk durasi waktu
+#include <chrono>
 #include <cstdlib>
-#include <ctime>   // Untuk random seed
-#include <iomanip> // Untuk format tabel (setw, left)
+#include <ctime>
+#include <iomanip>
 #include <iostream>
-#include <limits>  // Untuk numeric_limits (input validation)
-#include <regex>   // Untuk validasi format
+#include <limits>
+#include <regex>
 #include <string>
-#include <thread>  // Untuk animasi delay
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <thread>
+#endif
 
 using namespace std;
 
@@ -52,7 +56,11 @@ void loadingAnimation(string message) {
   cout << "\033[36m" << message << "\033[0m";
   for (int i = 0; i < 4; i++) {
     cout << "\033[36m.\033[0m" << flush;
-    this_thread::sleep_for(chrono::milliseconds(400)); // Delay 400ms
+#ifdef _WIN32
+    Sleep(400);
+#else
+    this_thread::sleep_for(chrono::milliseconds(400));
+#endif
   }
   cout << "\n";
 }
@@ -219,7 +227,18 @@ struct Sample {
   }
 };
 
-// --- CLASS QUEUE ---
+// Helper buat parsing tanggal DD/MM/YYYY ke integer biar gampang dibandingin
+// Formatnya jadi YYYYMMDD
+int parseTgl(string jdwl) {
+    try {
+        int d = stoi(jdwl.substr(0, 2));
+        int m = stoi(jdwl.substr(3, 2));
+        int y = stoi(jdwl.substr(6, 4));
+        return y * 10000 + m * 100 + d;
+    } catch (...) { return 0; }
+}
+
+// --- CLASS QUEUE (Sistem Antrean Laboratorium) ---
 class QueueAntrean {
 private:
   Sample *head;
@@ -227,13 +246,8 @@ private:
   int count;
 
 public:
-  QueueAntrean() {
-    head = nullptr;
-    tail = nullptr;
-    count = 0;
-  }
+  QueueAntrean() : head(nullptr), tail(nullptr), count(0) {}
 
-  // Destructor untuk memory management (mencegah memory leak)
   ~QueueAntrean() {
     while (head != nullptr) {
       Sample *temp = head;
@@ -244,85 +258,84 @@ public:
 
   bool isEmpty() { return head == nullptr; }
   int getSize() { return count; }
-  int nextNoAntrean() const { return count + 1; }
 
-  // Peek: lihat sampel pertama tanpa menghapus
-  Res<Sample *> peek() {
-    if (head == nullptr) {
-      return {false, "Antrean kosong!", nullptr};
-    }
-    return {true, "Sampel pertama dalam antrean", head};
-  }
-
-  // Cari sampel berdasarkan kode
-  Res<Sample *> search(string kode) {
-    Sample *temp = head;
-    while (temp != nullptr) {
-      if (temp->kode == kode) {
-        return {true, "Sampel ditemukan!", temp};
-      }
-      temp = temp->next;
-    }
-    return {false, "Sampel dengan kode '" + kode + "' tidak ditemukan!", nullptr};
-  }
-
-  Res<void> enqueue(string kode, string pengirim, int jenisUjiKode,
-                    string jadwal) {
+  // Masukin sampel ke antrean (Berdasarkan Prioritas Tanggal & Waktu Input)
+  Res<void> enqueue(string kode, string pengirim, int jenisUjiKode, string jadwal) {
     count++;
-    Sample *newNode = new Sample(count, kode, pengirim, jenisUjiKode, jadwal);
-    if (this->tail == nullptr) {
-      this->head = this->tail = newNode;
-    } else {
-      this->tail->next = newNode;
-      this->tail = newNode;
+    Sample *baru = new Sample(count, kode, pengirim, jenisUjiKode, jadwal);
+    int tglBaru = parseTgl(jadwal);
+
+    // Kasus 1: Antrean masih kosong
+    if (head == nullptr) {
+      head = tail = baru;
+    } 
+    // Kasus 2: Tanggal sampel baru lebih awal dari head (jadi prioritas pertama)
+    else if (tglBaru < parseTgl(head->jadwal)) {
+      baru->next = head;
+      head = baru;
+    } 
+    // Kasus 3: Cari posisi yang pas di tengah atau belakang
+    else {
+      Sample *curr = head;
+      // Geser terus selama tanggal sampel berikutnya masih <= tanggal sampel baru
+      // Ini ngejamin kalo tanggal sama, yang masuk duluan tetep di depan (FIFO)
+      while (curr->next != nullptr && parseTgl(curr->next->jadwal) <= tglBaru) {
+        curr = curr->next;
+      }
+      
+      baru->next = curr->next;
+      curr->next = baru;
+      
+      // Update tail kalo ternyata masuk paling belakang
+      if (baru->next == nullptr) {
+        tail = baru;
+      }
     }
-    return {true, "Sampel berhasil ditambahkan ke antrean! (No. Antrean: " + 
-                  to_string(count) + ")"};
+    
+    return {true, "Sampel " + kode + " masuk antrean (Jadwal: " + jadwal + ")"};
   }
 
+  // Ambil sampel paling depan (FIFO Prioritas)
   Res<Sample *> dequeue() {
-    if (this->head == nullptr) {
-      return {false, "Antrean kosong!", nullptr};
-    }
+    if (head == nullptr) return {false, "Antrean kosong!", nullptr};
 
-    Sample *temp = this->head;
-    this->head = this->head->next;
+    Sample *temp = head;
+    head = head->next;
 
-    if (this->head == nullptr) {
-      this->tail = nullptr;
-    }
+    if (head == nullptr) tail = nullptr;
 
     temp->next = nullptr;
     count--;
-    return {true, "Sampel No. " + to_string(temp->noAntrean) + 
-                  " berhasil diproses!", temp};
+    return {true, "Sampel " + temp->kode + " (No. " + to_string(temp->noAntrean) + ") beres diproses", temp};
+  }
+
+  // Cari sampel pake kode (Sequential Search)
+  Res<Sample *> search(string kode) {
+    Sample *t = head;
+    while (t != nullptr) {
+      if (t->kode == kode) return {true, "Ketemu!", t};
+      t = t->next;
+    }
+    return {false, "Kode '" + kode + "' gak ada di antrean", nullptr};
   }
 
   Response<void> printQueue() {
-    if (this->head == nullptr) {
-      return {false, "Antrean pengujian saat ini kosong!"};
-    }
-    Sample *temp = this->head;
-    int no = 1;
+    if (head == nullptr) return {false, "Lagi gak ada antrean nih."};
+    
+    Sample *t = head;
+    int i = 1;
     cout << "\n\033[36m";
     printLine('=', 75);
-    cout << ">>> DAFTAR ANTREAN PENGUJIAN SAAT INI <<<\n";
+    cout << ">>> URUTAN ANTREAN (BERDASARKAN PRIORITAS TANGGAL) <<<\n";
     printLine('=', 75);
     cout << "\033[0m";
     
-    while (temp != nullptr) {
-      cout << "  " << no << ". "
-           << "\033[1m[" << temp->kode << "]\033[0m"
-           << " No. Antrean: " << "\033[33m" << temp->noAntrean << "\033[0m"
-           << " | Pengirim: " << temp->pengirim << "\n"
-           << "     Jenis Uji: " << "\033[36m" 
-           << jenisUjiToString(temp->jenisUjiKode) << "\033[0m"
-            << " | Jadwal: " << temp->jadwal << "\n";
-      temp = temp->next;
-      no++;
+    while (t != nullptr) {
+      cout << "  " << i++ << ". \033[1m[" << t->kode << "]\033[0m | \033[33m" << t->jadwal << "\033[0m\n"
+           << "     Pengirim : " << t->pengirim << "\n"
+           << "     Uji      : \033[36m" << jenisUjiToString(t->jenisUjiKode) << "\033[0m\n";
+      t = t->next;
     }
-    printLine('-', 75);
-    cout << "  Total: " << (no - 1) << " sampel dalam antrean\n";
     printLine('=', 75);
     return {true, ""};
   }
