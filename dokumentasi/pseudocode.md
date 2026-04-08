@@ -1,46 +1,72 @@
-# Pseudocode Sistem Antrean Sampel Laboratorium
+# FINAL Pseudocode - Sesuai Logic main.cpp versi terbaru
 
-## 1. Tambah Sampel ke Antrean
-
+## 1. Tambah Sampel ke Antrean (Menu 1)
 ```
-Mulai
-Input data_sampel (pengirim, jenis_uji, tanggal)
-Jika data_sampel ada yang kosong:
-    Tampilkan error 'Harap lengkapi semua data'
-    Ulangi input
-Else:
-    antrian.enqueue(data_sampel)
-    Tampilkan notifikasi 'Berhasil tambah ke antrean'
-Selesai
-```
-
-## 2. Proses Sampel (Ambil dari Antrian)
-
-```
-Jika antrian tidak kosong:
-    sampel <- antrian.dequeue()
-    riwayat.push(sampel)
-    Tampilkan notifikasi 'Sampel berhasil diproses'
-Else:
-    Tampilkan error 'Tidak ada antrean untuk diproses'
+Tampilkan form input:
+  Input pengirim
+    Validasi: min 3 karakter, hanya huruf/spasi/dash
+  Pilih jenis uji (1-10)
+    Validasi angka 1-10
+  Input tanggal (DD/MM/YYYY)
+    Validasi format tanggal, range tahun 2000-2100, tanggal legal
+Jika ada input salah: tampilkan pesan error, ulangi input
+Jika valid: auto-generate kode sampel
+Konfirmasi: Simpan data? (Ya/Tidak)
+Jika Ya:
+  Masukkan ke antrean (insert sort: tanggal terdekat paling depan, FIFO untuk tanggal sama)
+  Notifikasi "Berhasil tambah ke antrean"
+Jika Tidak:
+  Data batal disimpan
 ```
 
-## 3. Reset Data
-
+## 2. Proses Sampel (Menu 2)
 ```
-antrian.clear()
-riwayat.clear()
-Tampilkan notifikasi 'Semua data antrean & riwayat berhasil dihapus'
+Jika antrean kosong:
+  Tampilkan error 'Tidak ada antrean untuk diproses'
+Jika tidak kosong:
+  Tampilkan animasi proses
+  Dequeue node pertama dari antrean (prioritas tanggal)
+  Push ke stack riwayat
+  Notifikasi sukses
 ```
 
-## 4. Cari Sampel di Antrean/Riwayat
-
+## 3. Lihat Antrean & Riwayat (Menu 3, 5), Terakhir Selesai (Menu 4)
 ```
-Input kode_cari
-Jika kode_cari ditemukan di antrian:
-    Tampilkan detail sampel dari antrian
-Else jika kode_cari ditemukan di riwayat:
-    Tampilkan detail sampel dari riwayat
-Else:
-    Tampilkan error 'Sampel tidak ditemukan'
+Menu 3: Cetak seluruh antrean urut prioritas (tanggal lalu FIFO)
+Menu 4: Cetak top riwayat (1 data terakhir selesai)
+Menu 5: Cetak seluruh riwayat (stack: terbaru-terlama)
+```
+
+## 4. Cari Sampel (Menu 6)
+```
+Input kode (format SPL-XXXX)
+Cek antrean:
+  Kalau ditemukan tampilkan detail
+  Kalau tidak, cek riwayat
+    Kalau ditemukan, tampilkan detail
+    Kalau tidak ada, notif 'tidak ditemukan'
+```
+
+## 5. Statistik Laboratorium (Menu 7)
+```
+Hitung:
+  Total = antrean + riwayat
+  Antrean = sisa antrean
+  Selesai = stack riwayat
+  Persentase selesai
+Print kode SPL terakhir, tampilkan semua statistik
+```
+
+## 6. Filter Jenis Uji (Menu 8)
+```
+Input jenis uji (1-10)
+Untuk semua data di antrean dan riwayat:
+  Jika jenis uji sama:
+    Print (kode, pengirim, jadwal, lokasi antrean/riwayat)
+Jika tidak ada yang ditemukan, notif kosong
+```
+
+## 7. Keluar (Menu 0)
+```
+Exit program.
 ```

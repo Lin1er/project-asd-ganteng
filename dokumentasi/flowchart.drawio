@@ -1,81 +1,80 @@
-<mxfile host="65bd71144e">
-    <diagram id="project-asd-ganteng-flow-1" name="Antrean Lab">
-        <mxGraphModel dx="671" dy="649" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1000" math="0" shadow="0">
-            <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <mxCell id="start" value="Mulai" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;verticalAlign=middle;strokeColor=#248d22;fillColor=#bff7c3;" parent="1" vertex="1">
-                    <mxGeometry x="120" y="40" width="110" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="input" value="Input Data Sampel?\n(Pengirim, Jenis Uji, Tanggal)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#2986cc;fillColor=#cbe6fe;" parent="1" vertex="1">
-                    <mxGeometry x="90" y="120" width="170" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="cekvalid" value="Validasi Input?" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#ff9900;fillColor=#fff6db;" parent="1" vertex="1">
-                    <mxGeometry x="115" y="220" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="valid" value="Data Valid\n?" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#e36565;fillColor=#fce1e1;" parent="1" vertex="1">
-                    <mxGeometry x="115" y="320" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="addq" value="Tambah ke Antrean" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#009688;fillColor=#d0f5f4;" parent="1" vertex="1">
-                    <mxGeometry x="120" y="420" width="110" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="notif" value="Tampilkan Notif\n(&#39;Berhasil tambah&#39;)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#455a64;fillColor=#cfd8dc;" parent="1" vertex="1">
-                    <mxGeometry x="105" y="500" width="140" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="proses" value="Proses sampel berikutnya?" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#f57c00;fillColor=#ffe0b2;" parent="1" vertex="1">
-                    <mxGeometry x="85" y="580" width="180" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="riwayat" value="Pindahkan ke Riwayat" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#7c4dff;fillColor=#d1c4e9;" parent="1" vertex="1">
-                    <mxGeometry x="350" y="580" width="160" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="end" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;verticalAlign=middle;strokeColor=#607d8b;fillColor=#b0bec5;" parent="1" vertex="1">
-                    <mxGeometry x="360" y="660" width="110" height="50" as="geometry"/>
-                </mxCell>
-                <mxCell id="nvalid" value="Notif Error\n(&#39;Lengkapi Data&#39;)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d32f2f;fillColor=#ffcdd2;" parent="1" vertex="1">
-                    <mxGeometry x="310" y="320" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="start" target="input" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="input" target="cekvalid" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cekvalid" target="valid" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e4" value="Tidak" style="edgeStyle=elbowEdgeStyle;html=1;fontColor=#b71c1c;strokeColor=#d32f2f;" parent="1" source="valid" target="nvalid" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="250" y="350" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="e5" value="Ya" style="edgeStyle=elbowEdgeStyle;html=1;fontColor=#388e3c;strokeColor=#388e3c;" parent="1" source="valid" target="addq" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="180" y="420" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="addq" target="notif" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="notif" target="proses" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e8" value="Proses" style="edgeStyle=elbowEdgeStyle;html=1;fontColor=#ff9800;strokeColor=#f57c00;" parent="1" source="proses" target="riwayat" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="380" y="600" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="riwayat" target="end" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="nvalid" target="input" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="200" y="350" as="targetPoint"/>
-                        <Array as="points">
-                            <mxPoint x="370" y="150"/>
-                        </Array>
-                    </mxGeometry>
-                </mxCell>
-            </root>
-        </mxGraphModel>
-    </diagram>
+<mxfile host="app.diagrams.net"><diagram id="logic-revisi-maincpp" name="Menu Antrean Lab (FINAL)">
+  <mxGraphModel dx="1200" dy="880" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+      <!-- Mulai -->
+      <mxCell id="start" value="Mulai Program" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;verticalAlign=middle;strokeColor=#43a047;fillColor=#d0f5c8;" vertex="1" parent="1"><mxGeometry x="120" y="40" width="120" height="50" as="geometry"/></mxCell>
+      <!-- Menu Utama -->
+      <mxCell id="menu" value="Tampil Menu Utama\n(Pilih 1-8, 0=keluar)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#1e88e5;fillColor=#cbe6fe;" vertex="1" parent="1"><mxGeometry x="110" y="120" width="180" height="65" as="geometry"/></mxCell>
+      <!-- Tambah Data -->
+      <mxCell id="data_in" value="[1] Tambah Sampel Baru" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#039be5;fillColor=#e1f5fe;" vertex="1" parent="1"><mxGeometry x="80" y="230" width="200" height="50" as="geometry"/></mxCell>
+      <mxCell id="isidata" value="Input data\npengirim, jenis_uji, tanggal" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#00897b;fillColor=#d0f5f4;" vertex="1" parent="1"><mxGeometry x="80" y="300" width="180" height="55" as="geometry"/></mxCell>
+      <mxCell id="valdata" value="Validasi seluruh input" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#ffb300;fillColor=#fff6db;" vertex="1" parent="1"><mxGeometry x="80" y="380" width="140" height="55" as="geometry"/></mxCell>
+      <mxCell id="valid_d?" value="input valid?" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#fb4444;fillColor=#fadee4;" vertex="1" parent="1"><mxGeometry x="80" y="460" width="110" height="55" as="geometry"/></mxCell>
+      <!-- Konfirmasi Simpan -->
+      <mxCell id="konfirm" value="Konfirmasi\n(simpan data?)" style="rectangle;rounded=1;whiteSpace=wrap;fillColor=#ecd6fc;strokeColor=#a259c8;" vertex="1" parent="1"><mxGeometry x="90" y="535" width="120" height="50" as="geometry"/></mxCell>
+      <mxCell id="commitantrean" value="Insert ke antrean\n(prioritas jadwal)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#009688;fillColor=#eeffde;" vertex="1" parent="1"><mxGeometry x="90" y="610" width="170" height="50" as="geometry"/></mxCell>
+      <mxCell id="notif_sukses" value="Notif sukses" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#4caf50;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="90" y="685" width="100" height="40" as="geometry"/></mxCell>
+      <!-- Proses Sampel -->
+      <mxCell id="prosesq" value="[2] Proses Sampel Berikutnya" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#fbc02d;fillColor=#fff9c4;" vertex="1" parent="1"><mxGeometry x="350" y="230" width="210" height="50" as="geometry"/></mxCell>
+      <mxCell id="cek_kosongq" value="Antrean kosong?" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#ef5350;fillColor=#ffcdd2;" vertex="1" parent="1"><mxGeometry x="370" y="300" width="110" height="50" as="geometry"/></mxCell>
+      <mxCell id="pdequeue" value="Dequeue antrean\n(prioritas jadwal)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#009688;fillColor=#e1fff8;" vertex="1" parent="1"><mxGeometry x="360" y="380" width="180" height="45" as="geometry"/></mxCell>
+      <mxCell id="priwayat" value="Push ke riwayat" style="rounded=1;whiteSpace=wrap;strokeColor=#8e24aa;fillColor=#f3e5f5;" vertex="1" parent="1"><mxGeometry x="355" y="445" width="120" height="45" as="geometry"/></mxCell>
+      <mxCell id="pnots" value="Notif sukses" style="rounded=1;whiteSpace=wrap;strokeColor=#388e3c;fillColor=#c8e6c9;" vertex="1" parent="1"><mxGeometry x="360" y="510" width="100" height="40" as="geometry"/></mxCell>
+      <mxCell id="perrq" value="Notif error\nAntrean kosong" style="rounded=1;whiteSpace=wrap;strokeColor=#c62828;fillColor=#ffcdd2;" vertex="1" parent="1"><mxGeometry x="490" y="300" width="120" height="50" as="geometry"/></mxCell>
+      <!-- Cari/Search -->
+      <mxCell id="menu6" value="[6] Cari kode sampel" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#c2185b;fillColor=#fce4ec;" vertex="1" parent="1"><mxGeometry x="670" y="230" width="175" height="50" as="geometry"/></mxCell>
+      <mxCell id="inputkode" value="Input kode cari" style="rounded=1;whiteSpace=wrap;strokeColor=#7b1fa2;fillColor=#ece3f6;" vertex="1" parent="1"><mxGeometry x="670" y="300" width="140" height="45" as="geometry"/></mxCell>
+      <mxCell id="seqar1" value="Cari di antrean" style="rounded=1;whiteSpace=wrap;strokeColor=#01579b;fillColor=#e3f2fd;" vertex="1" parent="1"><mxGeometry x="650" y="360" width="130" height="42" as="geometry"/></mxCell>
+      <mxCell id="seqar2" value="Ketemu?" style="rhombus;whiteSpace=wrap;strokeColor=#ffb300;fillColor=#fffde7;" vertex="1" parent="1"><mxGeometry x="650" y="412" width="75" height="45" as="geometry"/></mxCell>
+      <mxCell id="seqar3" value="Cari di riwayat" style="rounded=1;whiteSpace=wrap;strokeColor=#43a047;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="780" y="412" width="120" height="40" as="geometry"/></mxCell>
+      <mxCell id="seqar4" value="Ketemu?" style="rhombus;whiteSpace=wrap;strokeColor=#ffb300;fillColor=#fffde7;" vertex="1" parent="1"><mxGeometry x="930" y="412" width="75" height="45" as="geometry"/></mxCell>
+      <mxCell id="seqdeta" value="Tampilkan detail" style="rounded=1;whiteSpace=wrap;strokeColor=#388e3c;fillColor=#dcedc8;" vertex="1" parent="1"><mxGeometry x="1020" y="412" width="120" height="42" as="geometry"/></mxCell>
+      <mxCell id="seqerr" value="Not found/notif error" style="rounded=1;whiteSpace=wrap;strokeColor=#d32f2f;fillColor=#ffd6d6;" vertex="1" parent="1"><mxGeometry x="800" y="490" width="140" height="40" as="geometry"/></mxCell>
+      <!-- Statistik/Filter -->
+      <mxCell id="menu7" value="[7] Statistik" style="rounded=1;whiteSpace=wrap;strokeColor=#1565c0;fillColor=#bbdefb;" vertex="1" parent="1"><mxGeometry x="1150" y="230" width="120" height="40" as="geometry"/></mxCell>
+      <mxCell id="statprint" value="Hitung/tampil statistik" style="rounded=1;whiteSpace=wrap;strokeColor=#2e7d32;fillColor=#d0f8ce;" vertex="1" parent="1"><mxGeometry x="1150" y="300" width="120" height="40" as="geometry"/></mxCell>
+      <mxCell id="menu8" value="[8] Filter Jenis Uji" style="rounded=1;whiteSpace=wrap;strokeColor=#ab47bc;fillColor=#f3e5f5;" vertex="1" parent="1"><mxGeometry x="1150" y="360" width="140" height="40" as="geometry"/></mxCell>
+      <mxCell id="piljns" value="Pilih kode jenis uji" style="rounded=1;whiteSpace=wrap;strokeColor=#039be5;fillColor=#e1f5fe;" vertex="1" parent="1"><mxGeometry x="1150" y="430" width="160" height="50" as="geometry"/></mxCell>
+      <mxCell id="filhasil" value="Tampil data antrian/riwayat jika ada, else notif kosong" style="rounded=1;whiteSpace=wrap;strokeColor=#388e3c;fillColor=#dcedc8;" vertex="1" parent="1"><mxGeometry x="1150" y="520" width="200" height="48" as="geometry"/></mxCell>
+      <!-- Menu Keluar -->
+      <mxCell id="ex" value="[0] Keluar" style="ellipse;whiteSpace=wrap;strokeColor=#607d8b;fillColor=#cfd8dc;aspect=fixed;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="800" y="700" width="110" height="50" as="geometry"/></mxCell>
+      <!-- Edges, akan simple, untuk import draw.io visualisasi -->
+      <mxCell id="eSTARTMENU" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="start" target="menu"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="menu" target="data_in"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="data_in" target="isidata"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e3" edge="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" parent="1" source="isidata" target="valdata"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e4" edge="1" parent="1" source="valdata" target="valid_d?"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e4a" value="TIDAK" style="edgeStyle=elbowEdgeStyle;fontColor=#d32f2f;" edge="1" parent="1" source="valid_d?" target="isidata"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e4b" value="VALID" style="edgeStyle=elbowEdgeStyle;fontColor=#43a047;" edge="1" parent="1" source="valid_d?" target="konfirm"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="konfirm" target="commitantrean"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="commitantrean" target="notif_sukses"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <!-- Proses sampel -->
+      <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="menu" target="prosesq"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="prosesq" target="cek_kosongq"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e8a" value="TIDAK" edge="1" parent="1" source="cek_kosongq" target="pdequeue"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e8b" value="KOSONG" edge="1" parent="1" source="cek_kosongq" target="perrq"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e9" edge="1" parent="1" source="pdequeue" target="priwayat"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e10" edge="1" parent="1" source="priwayat" target="pnots"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <!-- Cari kode -->
+      <mxCell id="e11" edge="1" parent="1" source="menu" target="menu6"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e12" edge="1" parent="1" source="menu6" target="inputkode"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e13" edge="1" parent="1" source="inputkode" target="seqar1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e14" edge="1" parent="1" source="seqar1" target="seqar2"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e14a" value="TIDAK" edge="1" parent="1" source="seqar2" target="seqar3"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e14b" value="YA" edge="1" parent="1" source="seqar2" target="seqdeta"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e15" edge="1" parent="1" source="seqar3" target="seqar4"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e15a" value="YA" edge="1" parent="1" source="seqar4" target="seqdeta"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e15b" value="TIDAK" edge="1" parent="1" source="seqar4" target="seqerr"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <!-- Statistik/filter/exit -->
+      <mxCell id="e16" edge="1" parent="1" source="menu" target="menu7"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e17" edge="1" parent="1" source="menu7" target="statprint"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e18" edge="1" parent="1" source="menu" target="menu8"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e19" edge="1" parent="1" source="menu8" target="piljns"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e20" edge="1" parent="1" source="piljns" target="filhasil"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e21" edge="1" parent="1" source="menu" target="ex"><mxGeometry relative="1" as="geometry"/></mxCell>
+    </root>
+  </mxGraphModel>
+</diagram>
 </mxfile>
