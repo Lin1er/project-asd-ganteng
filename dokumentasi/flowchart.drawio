@@ -1,69 +1,51 @@
-<mxfile host="app.diagrams.net"><diagram id="logic-revisi-lengkap" name="Menu Antrean Lab (FINAL+MENUS)">
-  <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1100" math="0" shadow="0">
-    <root>
-      <mxCell id="0"/>
-      <mxCell id="1" parent="0"/>
-      <!-- Start node -->
-      <mxCell id="start" value="Start Program" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;verticalAlign=middle;strokeColor=#388e3c;fillColor=#d0f5c8;" vertex="1" parent="1"><mxGeometry x="190" y="40" width="120" height="50" as="geometry"/></mxCell>
-      <!-- Main menu -->
-      <mxCell id="menu" value="Main Menu\n(1–8, 0=Exit)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#3066be;fillColor=#cbebfe;" vertex="1" parent="1"><mxGeometry x="190" y="120" width="160" height="60" as="geometry"/></mxCell>
-      <!-- Menu 1 Add Sample -->
-      <mxCell id="addsample" value="[1] Add New Sample" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#008cc0;fillColor=#e1f5fe;" vertex="1" parent="1"><mxGeometry x="20" y="220" width="170" height="40" as="geometry"/></mxCell>
-      <mxCell id="inputsamp" value="Input sender, type, date" style="rounded=1;whiteSpace=wrap;strokeColor=#009688;fillColor=#b2f7ef;" vertex="1" parent="1"><mxGeometry x="20" y="275" width="150" height="40" as="geometry"/></mxCell>
-      <mxCell id="validsamp" value="Validate all input" style="rhombus;whiteSpace=wrap;strokeColor=#ffb300;fillColor=#fff6db;" vertex="1" parent="1"><mxGeometry x="10" y="335" width="120" height="50" as="geometry"/></mxCell>
-      <mxCell id="isvalid" value="Input valid?" style="rhombus;whiteSpace=wrap;strokeColor=#d32f2f;fillColor=#ffd6d6;" vertex="1" parent="1"><mxGeometry x="5" y="400" width="100" height="45" as="geometry"/></mxCell>
-      <mxCell id="confirmsave" value="Confirm save (Y/N)?" style="rounded=1;whiteSpace=wrap;strokeColor=#a259c8;fillColor=#ecd6fc;" vertex="1" parent="1"><mxGeometry x="12" y="465" width="130" height="40" as="geometry"/></mxCell>
-      <mxCell id="insertsamp" value="Insert to queue (sorted by date, FIFO)" style="rounded=1;whiteSpace=wrap;strokeColor=#388e3c;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="15" y="520" width="190" height="40" as="geometry"/></mxCell>
-      <mxCell id="notifadd" value="Show notification: success or cancelled" style="rounded=1;whiteSpace=wrap;strokeColor=#b0bec5;fillColor=#f0f4c3;" vertex="1" parent="1"><mxGeometry x="20" y="575" width="190" height="40" as="geometry"/></mxCell>
-      <!-- Menu 2 Process Next -->
-      <mxCell id="procnext" value="[2] Process Next Sample" style="rounded=1;whiteSpace=wrap;strokeColor=#fbc02d;fillColor=#fff9c4;" vertex="1" parent="1"><mxGeometry x="250" y="220" width="180" height="40" as="geometry"/></mxCell>
-      <mxCell id="ifqueueempty" value="Queue empty?" style="rhombus;whiteSpace=wrap;strokeColor=#ef5350;fillColor=#ffcdd2;" vertex="1" parent="1"><mxGeometry x="260" y="275" width="100" height="40" as="geometry"/></mxCell>
-      <mxCell id="deq" value="Dequeue from queue\npush to history" style="rounded=1;whiteSpace=wrap;strokeColor=#388e3c;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="260" y="325" width="130" height="45" as="geometry"/></mxCell>
-      <mxCell id="notifproc" value="Show notification: processed" style="rounded=1;whiteSpace=wrap;strokeColor=#009688;fillColor=#c8e6c9;" vertex="1" parent="1"><mxGeometry x="260" y="385" width="150" height="40" as="geometry"/></mxCell>
-      <mxCell id="notifnoq" value="Show notification: queue empty" style="rounded=1;whiteSpace=wrap;strokeColor=#d32f2f;fillColor=#ffd6d6;" vertex="1" parent="1"><mxGeometry x="390" y="275" width="170" height="40" as="geometry"/></mxCell>
-      <!-- Menu 3 Show Queue -->
-      <mxCell id="showqueue" value="[3] Show Queue" style="rounded=1;whiteSpace=wrap;strokeColor=#1565c0;fillColor=#bbdefb;" vertex="1" parent="1"><mxGeometry x="490" y="220" width="120" height="40" as="geometry"/></mxCell>
-      <mxCell id="printq" value="Print all data in queue (sorted by date, FIFO)" style="rounded=1;whiteSpace=wrap;strokeColor=#616161;fillColor=#cfd8dc;" vertex="1" parent="1"><mxGeometry x="490" y="275" width="220" height="40" as="geometry"/></mxCell>
-      <!-- Menu 4 Show Last Finished -->
-      <mxCell id="showlast" value="[4] Show Last Finished" style="rounded=1;whiteSpace=wrap;strokeColor=#b39ddb;fillColor=#ede7f6;" vertex="1" parent="1"><mxGeometry x="740" y="220" width="160" height="40" as="geometry"/></mxCell>
-      <mxCell id="printlast" value="Print data on top of finished stack" style="rounded=1;whiteSpace=wrap;strokeColor=#616161;fillColor=#cfd8dc;" vertex="1" parent="1"><mxGeometry x="740" y="275" width="210" height="40" as="geometry"/></mxCell>
-      <!-- Menu 5 Show History -->
-      <mxCell id="showhist" value="[5] Show History" style="rounded=1;whiteSpace=wrap;strokeColor=#26a69a;fillColor=#b2dfdb;" vertex="1" parent="1"><mxGeometry x="1010" y="220" width="130" height="40" as="geometry"/></mxCell>
-      <mxCell id="printhist" value="Print all data in finished stack" style="rounded=1;whiteSpace=wrap;strokeColor=#616161;fillColor=#f0f4c3;" vertex="1" parent="1"><mxGeometry x="1010" y="275" width="200" height="40" as="geometry"/></mxCell>
-      <!-- Menu 6 Search -->
-      <mxCell id="search" value="[6] Search Sample Code" style="rounded=1;whiteSpace=wrap;strokeColor=#c2185b;fillColor=#f8bbd0;" vertex="1" parent="1"><mxGeometry x="20" y="640" width="180" height="40" as="geometry"/></mxCell>
-      <!-- Menu 7 Statistics -->
-      <mxCell id="stats" value="[7] Statistics" style="rounded=1;whiteSpace=wrap;strokeColor=#2e7d32;fillColor=#c8e6c9;" vertex="1" parent="1"><mxGeometry x="260" y="640" width="120" height="40" as="geometry"/></mxCell>
-      <!-- Menu 8 Filter -->
-      <mxCell id="filter" value="[8] Filter by Test Type" style="rounded=1;whiteSpace=wrap;strokeColor=#ab47bc;fillColor=#f3e5f5;" vertex="1" parent="1"><mxGeometry x="490" y="640" width="150" height="40" as="geometry"/></mxCell>
-      <!-- Exit -->
-      <mxCell id="exit" value="[0] Exit Program" style="ellipse;whiteSpace=wrap;strokeColor=#607d8b;fillColor=#eceff1;aspect=fixed;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="850" y="640" width="110" height="50" as="geometry"/></mxCell>
-      <!-- Edges -->
-      <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="start" target="menu"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="addsample"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="addsample" target="inputsamp"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="inputsamp" target="validsamp"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="validsamp" target="isvalid"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e6a" value="NO" style="edgeStyle=elbowEdgeStyle;fontColor=#c62828;" edge="1" parent="1" source="isvalid" target="inputsamp"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e6b" value="YES" style="edgeStyle=elbowEdgeStyle;fontColor=#43a047;" edge="1" parent="1" source="isvalid" target="confirmsave"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="confirmsave" target="insertsamp"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="insertsamp" target="notifadd"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="procnext"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="procnext" target="ifqueueempty"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e11a" value="NO" style="edgeStyle=elbowEdgeStyle;fontColor=#43a047;" edge="1" parent="1" source="ifqueueempty" target="deq"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e11b" value="YES" style="edgeStyle=elbowEdgeStyle;fontColor=#d32f2f;" edge="1" parent="1" source="ifqueueempty" target="notifnoq"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="deq" target="notifproc"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="showqueue"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="showqueue" target="printq"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="showlast"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="showlast" target="printlast"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="showhist"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="showhist" target="printhist"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="search"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="stats"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="filter"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="menu" target="exit"><mxGeometry relative="1" as="geometry"/></mxCell>
-    </root>
-  </mxGraphModel>
-</diagram>
-</mxfile>
+<mxfile host="app.diagrams.net"><diagram id="main-menus-final" name="Antrean Lab - Main Menus Final"><mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1000"><root><mxCell id="0" /><mxCell id="1" parent="0" />
+  <mxCell id="start" value="Start Program" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#388e3c;fillColor=#d0f5c8" vertex="1" parent="1"><mxGeometry x="280" y="35" width="110" height="50" as="geometry"/></mxCell>
+  <mxCell id="menu" value="Main Menu (1-8, 0 to Exit)" style="rounded=1;fillColor=#cbebfe;strokeColor=#3066be;html=1;" vertex="1" parent="1"><mxGeometry x="270" y="105" width="210" height="55" as="geometry"/></mxCell>
+  <mxCell id="menu1" value="[1] Add Sample" style="rounded=1;whiteSpace=wrap;strokeColor=#008cc0;fillColor=#e1f5fe;" vertex="1" parent="1"><mxGeometry x="60" y="200" width="140" height="40" as="geometry"/></mxCell>
+  <mxCell id="add_input" value="Input sender, type, date" style="rounded=1;whiteSpace=wrap;strokeColor=#009688;fillColor=#b2f7ef;" vertex="1" parent="1"><mxGeometry x="35" y="255" width="170" height="40" as="geometry"/></mxCell>
+  <mxCell id="add_valid" value="Validate input" style="rhombus;whiteSpace=wrap;strokeColor=#ffb300;fillColor=#fff6db;" vertex="1" parent="1"><mxGeometry x="20" y="307" width="120" height="45" as="geometry"/></mxCell>
+  <mxCell id="add_isvalid" value="Valid?" style="rhombus;whiteSpace=wrap;strokeColor=#e53935;fillColor=#ffebee;" vertex="1" parent="1"><mxGeometry x="30" y="365" width="70" height="42" as="geometry"/></mxCell>
+  <mxCell id="add_confirm" value="Confirm Save?" style="rounded=1;whiteSpace=wrap;strokeColor=#8e24aa;fillColor=#ecd6fc;" vertex="1" parent="1"><mxGeometry x="55" y="415" width="100" height="32" as="geometry"/></mxCell>
+  <mxCell id="add_commit" value="Insert to Queue (sort by date/FIFO)" style="rounded=1;strokeColor=#388e3c;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="30" y="465" width="170" height="34" as="geometry"/></mxCell>
+  <mxCell id="add_result" value="Show notif: success/cancelled" style="rounded=1;strokeColor=#b0bec5;fillColor=#f5fbc3;" vertex="1" parent="1"><mxGeometry x="40" y="510" width="150" height="34" as="geometry"/></mxCell>
+  <mxCell id="menu2" value="[2] Process Next" style="rounded=1;strokeColor=#fbc02d;fillColor=#fff9c4;" vertex="1" parent="1"><mxGeometry x="240" y="200" width="130" height="40" as="geometry"/></mxCell>
+  <mxCell id="process_emptyq" value="Queue empty?" style="rhombus;whiteSpace=wrap;strokeColor=#ef5350;fillColor=#ffcdd2;" vertex="1" parent="1"><mxGeometry x="230" y="255" width="80" height="34" as="geometry"/></mxCell>
+  <mxCell id="process_deq" value="Dequeue → push to history" style="rounded=1;strokeColor=#66bb6a;fillColor=#e8f5e9;" vertex="1" parent="1"><mxGeometry x="210" y="295" width="160" height="34" as="geometry"/></mxCell>
+  <mxCell id="process_done" value="Notif: processed" style="rounded=1;strokeColor=#aed581;fillColor=#f4ffe2;" vertex="1" parent="1"><mxGeometry x="217" y="332" width="110" height="28" as="geometry"/></mxCell>
+  <mxCell id="process_emptyresult" value="Notif: queue empty" style="rounded=1;strokeColor=#e53935;fillColor=#ffebee;" vertex="1" parent="1"><mxGeometry x="328" y="255" width="120" height="32" as="geometry"/></mxCell>
+  <mxCell id="menu3" value="[3] Show Queue" style="rounded=1;strokeColor=#1976d2;fillColor=#bbdefb;" vertex="1" parent="1"><mxGeometry x="410" y="200" width="120" height="40" as="geometry"/></mxCell>
+  <mxCell id="menu3_act" value="Print queue (sorted by date/FIFO)" style="rounded=1;strokeColor=#616161;fillColor=#cfd8dc;" vertex="1" parent="1"><mxGeometry x="410" y="255" width="180" height="34" as="geometry"/></mxCell>
+  <mxCell id="menu4" value="[4] Show Last Finished" style="rounded=1;strokeColor=#ce93d8;fillColor=#f3e5f5;" vertex="1" parent="1"><mxGeometry x="620" y="200" width="160" height="40" as="geometry"/></mxCell>
+  <mxCell id="menu4_act" value="Print top of finished stack" style="rounded=1;strokeColor=#616161;fillColor=#cfd8dc;" vertex="1" parent="1"><mxGeometry x="620" y="255" width="170" height="34" as="geometry"/></mxCell>
+  <mxCell id="menu5" value="[5] Show History" style="rounded=1;strokeColor=#009688;fillColor=#b2dfdb;" vertex="1" parent="1"><mxGeometry x="830" y="200" width="120" height="40" as="geometry"/></mxCell>
+  <mxCell id="menu5_act" value="Print all finished (stack)" style="rounded=1;strokeColor=#616161;fillColor=#fff9c4;" vertex="1" parent="1"><mxGeometry x="830" y="255" width="180" height="34" as="geometry"/></mxCell>
+  <mxCell id="menu6" value="[6] Search Sample" style="rounded=1;strokeColor=#c2185b;fillColor=#f8bbd0;" vertex="1" parent="1"><mxGeometry x="60" y="600" width="140" height="40" as="geometry"/></mxCell>
+  <mxCell id="menu7" value="[7] Statistics" style="rounded=1;strokeColor=#2e7d32;fillColor=#c8e6c9;" vertex="1" parent="1"><mxGeometry x="310" y="600" width="120" height="40" as="geometry"/></mxCell>
+  <mxCell id="menu8" value="[8] Filter by Test Type" style="rounded=1;strokeColor=#ab47bc;fillColor=#ede7f6;" vertex="1" parent="1"><mxGeometry x="550" y="600" width="160" height="40" as="geometry"/></mxCell>
+  <mxCell id="exit" value="[0] Exit" style="ellipse;strokeColor=#607d8b;fillColor=#eceff1;aspect=fixed;align=center;" vertex="1" parent="1"><mxGeometry x="830" y="600" width="90" height="46" as="geometry"/></mxCell>
+  <!-- Edges: main sequence -->
+  <mxCell id="e1" edge="1" parent="1" source="start" target="menu"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e2" edge="1" parent="1" source="menu" target="menu1"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e3" edge="1" parent="1" source="menu1" target="add_input"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e4" edge="1" parent="1" source="add_input" target="add_valid"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e5" edge="1" parent="1" source="add_valid" target="add_isvalid"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e6n" value="No" edge="1" style="fontColor=#d32f2f;" parent="1" source="add_isvalid" target="add_input"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e6y" value="Yes" edge="1" style="fontColor=#43a047;" parent="1" source="add_isvalid" target="add_confirm"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e7" edge="1" parent="1" source="add_confirm" target="add_commit"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e8" edge="1" parent="1" source="add_commit" target="add_result"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e9" edge="1" parent="1" source="menu" target="menu2"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e10" edge="1" parent="1" source="menu2" target="process_emptyq"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e11n" value="No" edge="1" parent="1" source="process_emptyq" target="process_deq"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e11y" value="Yes" edge="1" parent="1" source="process_emptyq" target="process_emptyresult"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e12" edge="1" parent="1" source="process_deq" target="process_done"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e13" edge="1" parent="1" source="menu" target="menu3"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e14" edge="1" parent="1" source="menu3" target="menu3_act"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e15" edge="1" parent="1" source="menu" target="menu4"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e16" edge="1" parent="1" source="menu4" target="menu4_act"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e17" edge="1" parent="1" source="menu" target="menu5"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e18" edge="1" parent="1" source="menu5" target="menu5_act"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e19" edge="1" parent="1" source="menu" target="menu6"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e20" edge="1" parent="1" source="menu" target="menu7"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e21" edge="1" parent="1" source="menu" target="menu8"><mxGeometry relative="1" as="geometry"/></mxCell>
+  <mxCell id="e22" edge="1" parent="1" source="menu" target="exit"><mxGeometry relative="1" as="geometry"/></mxCell>
+</root></mxGraphModel></diagram></mxfile>

@@ -1,72 +1,119 @@
-# FINAL Pseudocode - Sesuai Logic main.cpp versi terbaru
+# FINAL Pseudocode (English, Structured)
 
-## 1. Tambah Sampel ke Antrean (Menu 1)
+## 1. Add Sample to Queue (Menu 1)
 ```
-Tampilkan form input:
-  Input pengirim
-    Validasi: min 3 karakter, hanya huruf/spasi/dash
-  Pilih jenis uji (1-10)
-    Validasi angka 1-10
-  Input tanggal (DD/MM/YYYY)
-    Validasi format tanggal, range tahun 2000-2100, tanggal legal
-Jika ada input salah: tampilkan pesan error, ulangi input
-Jika valid: auto-generate kode sampel
-Konfirmasi: Simpan data? (Ya/Tidak)
-Jika Ya:
-  Masukkan ke antrean (insert sort: tanggal terdekat paling depan, FIFO untuk tanggal sama)
-  Notifikasi "Berhasil tambah ke antrean"
-Jika Tidak:
-  Data batal disimpan
-```
-
-## 2. Proses Sampel (Menu 2)
-```
-Jika antrean kosong:
-  Tampilkan error 'Tidak ada antrean untuk diproses'
-Jika tidak kosong:
-  Tampilkan animasi proses
-  Dequeue node pertama dari antrean (prioritas tanggal)
-  Push ke stack riwayat
-  Notifikasi sukses
-```
-
-## 3. Lihat Antrean & Riwayat (Menu 3, 5), Terakhir Selesai (Menu 4)
-```
-Menu 3: Cetak seluruh antrean urut prioritas (tanggal lalu FIFO)
-Menu 4: Cetak top riwayat (1 data terakhir selesai)
-Menu 5: Cetak seluruh riwayat (stack: terbaru-terlama)
+procedure AddSampleToQueue
+    input sender_name
+    validate sender_name (min 3 letters, letters/space/dash)
+    if invalid then
+        print "Invalid sender name"
+        return
+    end if
+    select test_type (1–10)
+    if invalid then
+        print "Invalid test type"
+        return
+    end if
+    input test_date (DD/MM/YYYY)
+    validate test_date (legal day, 2000–2100)
+    if invalid then
+        print "Invalid date"
+        return
+    end if
+    autogen sample_code = next SPL-XXXX
+    prompt "Save sample? (Y/N)"
+    if yes then
+        insert sample into queue (sorted by soonest test_date, FIFO for same date)
+        print "Sample added"
+    else
+        print "Sample not saved"
+    end if
+end procedure
 ```
 
-## 4. Cari Sampel (Menu 6)
+## 2. Process Next Sample (Menu 2)
 ```
-Input kode (format SPL-XXXX)
-Cek antrean:
-  Kalau ditemukan tampilkan detail
-  Kalau tidak, cek riwayat
-    Kalau ditemukan, tampilkan detail
-    Kalau tidak ada, notif 'tidak ditemukan'
-```
-
-## 5. Statistik Laboratorium (Menu 7)
-```
-Hitung:
-  Total = antrean + riwayat
-  Antrean = sisa antrean
-  Selesai = stack riwayat
-  Persentase selesai
-Print kode SPL terakhir, tampilkan semua statistik
+procedure ProcessNextSample
+    if queue is empty then
+        print "No sample to process"
+        return
+    end if
+    dequeue node from queue (earliest test_date)
+    push to finished stack
+    print "Sample processed"
+end procedure
 ```
 
-## 6. Filter Jenis Uji (Menu 8)
+## 3. Queue and History (Menu 3, 4, 5)
 ```
-Input jenis uji (1-10)
-Untuk semua data di antrean dan riwayat:
-  Jika jenis uji sama:
-    Print (kode, pengirim, jadwal, lokasi antrean/riwayat)
-Jika tidak ada yang ditemukan, notif kosong
+procedure PrintQueue
+    for each sample in queue
+        print sample details (by test_date priority)
+end procedure
+
+procedure PrintLastProcessed
+    if finished stack empty then
+        print "No processed sample"
+    else
+        print details of top of stack
+end procedure
+
+procedure PrintHistory
+    for each sample in finished_stack (LIFO)
+        print sample details
+end procedure
 ```
 
-## 7. Keluar (Menu 0)
+## 4. Search Sample (Menu 6)
 ```
-Exit program.
+procedure SearchSample
+    input sample_code (SPL-XXXX)
+    if exists in queue then
+        print details
+    else if exists in finished stack then
+        print details
+    else
+        print "Sample not found"
+    end if
+end procedure
+```
+
+## 5. Lab Statistics (Menu 7)
+```
+procedure PrintLabStats
+    total = queue.size + finished_stack.size
+    print total samples, queue size, finished stack size
+    print completion percentage
+    print last SPL code
+end procedure
+```
+
+## 6. Filter by Test Type (Menu 8)
+```
+procedure FilterByTestType
+    input test_type (1–10)
+    found = false
+    for each sample in queue
+        if sample.test_type == test_type then
+            print sample (queue)
+            found = true
+        end if
+    end for
+    for each sample in finished_stack
+        if sample.test_type == test_type then
+            print sample (finished)
+            found = true
+        end if
+    end for
+    if not found then
+        print "No sample found for this test type"
+    end if
+end procedure
+```
+
+## 7. Exit (Menu 0)
+```
+procedure ExitProgram
+    exit
+end procedure
 ```
