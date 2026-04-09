@@ -1,209 +1,213 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lab Material - Sistem Antrean Sampel</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <!-- Loading Screen -->
-    <div id="loading" class="loading">
-      <div class="loading-content">
-        <div class="spinner"></div>
-        <p>Loading WebAssembly Module...</p>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Material | Antrean Laboratorium Uji</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .gradient-text {
+            background: linear-gradient(90deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="mt-4 font-semibold text-slate-500 animate-pulse text-sm uppercase tracking-widest">Initializing C++ Engine</p>
     </div>
 
-    <!-- Main App -->
-    <div id="app" class="app hidden">
-      <!-- Header -->
-      <header class="header">
-        <h1>Lab Material (Antrean Laboratorium)</h1>
-        <p class="tagline" style="font-size: 1.15em; margin-bottom: 8px">
-          Antrean & Riwayat Sampel - Laboratorium Material Testing
-        </p>
-      </header>
-
-      <!-- Stats -->
-      <section class="stats">
-        <div class="stat-card">
-          <span class="stat-value" id="queueCount">0</span>
-          <span class="stat-label">Antrean</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="historyCount">0</span>
-          <span class="stat-label">Selesai</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="totalCount">0</span>
-          <span class="stat-label">Total</span>
-        </div>
-      </section>
-
-      <!-- Main Content -->
-      <main class="main">
-        <!-- Left: Form & Actions -->
-        <aside class="sidebar">
-          <!-- Add Form -->
-          <div class="card">
-            <h2>Tambah Sampel Baru</h2>
-            <p style="font-size: 0.95em; color: #ddd; margin-bottom: 8px">
-              Isi identitas pengirim & uji, <b>cukup 3 langkah</b> lalu tekan
-              <b>Tambah ke Antrean</b>
-            </p>
-            <form id="addForm">
-              <div class="form-group">
-                <label for="pengirim"
-                  >Nama Pengirim
-                  <span style="color: #ef4444; font-size: 1.1em">*</span></label
-                >
-                <input
-                  type="text"
-                  id="pengirim"
-                  placeholder="PT. ABC Industri"
-                  required
-                  minlength="3"
-                />
-              </div>
-              <div class="form-group">
-                <label for="jenisUji"
-                  >Jenis Uji<span style="color: #ef4444; font-size: 1.1em"
-                    >*</span
-                  ></label
-                >
-                <select id="jenisUji" required>
-                  <option value="">Pilih jenis uji...</option>
-                  <option value="1">Uji Tarik</option>
-                  <option value="2">Uji Tekan</option>
-                  <option value="3">Uji Kekerasan</option>
-                  <option value="4">Uji Impak</option>
-                  <option value="5">Uji Lentur</option>
-                  <option value="6">Uji Kelelahan</option>
-                  <option value="7">Uji Korosi</option>
-                  <option value="8">Metalografi</option>
-                  <option value="9">Analisis Komposisi</option>
-                  <option value="10">Analisis Termal</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="jadwal"
-                  >Tanggal Uji<span style="color: #ef4444; font-size: 1.1em"
-                    >*</span
-                  ></label
-                >
-                <input type="date" id="jadwal" required />
-              </div>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                style="font-size: 1.2em; padding: 16px 0"
-              >
-                + Tambah ke Antrean (1x klik)
-              </button>
-            </form>
-          </div>
-
-          <!-- Actions -->
-          <div class="card">
-            <h2>Aksi & Kontrol Cepat</h2>
-            <div class="actions" style="gap: 16px">
-              <button
-                id="btnProcess"
-                class="btn btn-success"
-                style="font-size: 1.15em; padding: 14px 0; margin-bottom: 4px"
-              >
-                ➡️ Proses Sampel Berikutnya
-              </button>
-              <button
-                id="btnSearch"
-                class="btn btn-secondary"
-                style="font-size: 1.1em; padding: 13px 0; margin-bottom: 4px"
-              >
-                🔍 Cari Berdasar Kode
-              </button>
-              <button
-                id="btnReset"
-                class="btn btn-danger"
-                style="font-size: 1.1em; padding: 13px 0"
-              >
-                🗑 Reset/Hapus Semua Data
-              </button>
+    <div id="app" class="hidden">
+        <!-- Navbar -->
+        <nav class="sticky top-0 z-40 w-full glass border-b border-slate-200 px-6 py-4">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-200">
+                        <span class="text-white font-bold text-lg">L</span>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">Lab Material | Antrean Laboratorium Uji</h1>
+                </div>
+                <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500">
+                    <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full border border-green-100 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
+                        System Online
+                    </span>
+                    <span class="text-slate-300">|</span>
+                    <span id="currentDate" class="font-mono"></span>
+                </div>
             </div>
-          </div>
-        </aside>
+        </nav>
 
-        <!-- Right: Lists -->
-        <div class="content">
-          <!-- Queue -->
-          <div class="card">
-            <h2>
-              Daftar Sampel dalam Antrean
-              <span class="count" id="queueBadge">0</span>
-            </h2>
-            <p style="font-size: 0.92em; color: #aaa">
-              Klik 'Proses Sampel' bila sudah siap uji. Daftar dibawah otomatis
-              update!
-            </p>
-            <div id="queueList" class="list">
-              <p class="empty">Belum ada sampel dalam antrean</p>
+        <main class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Left Panel: Controls -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Form Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 overflow-hidden relative">
+                    <div class="absolute top-0 right-0 p-4 opacity-5">
+                        <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <h2 class="text-lg font-bold mb-1">Registrasi Sampel</h2>
+                    <p class="text-sm text-slate-500 mb-6">Input data pengujian baru ke dalam sistem.</p>
+
+                    <form id="addForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Nama Pengirim</label>
+                            <input type="text" id="pengirim" required minlength="3" placeholder="Masukkan nama vendor/instansi"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Metode Pengujian</label>
+                            <select id="jenisUji" required
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all">
+                                <option value="">Pilih jenis uji...</option>
+                                <option value="1">Uji Tarik (Tensile)</option>
+                                <option value="2">Uji Tekan (Compression)</option>
+                                <option value="3">Uji Kekerasan (Hardness)</option>
+                                <option value="4">Uji Impak (Impact)</option>
+                                <option value="5">Uji Lentur (Flexural)</option>
+                                <option value="6">Uji Kelelahan (Fatigue)</option>
+                                <option value="7">Uji Korosi (Corrosion)</option>
+                                <option value="8">Metalografi</option>
+                                <option value="9">Analisis SEM/EDX</option>
+                                <option value="10">Analisis Termal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Jadwal Pengujian</label>
+                            <input type="date" id="jadwal" required
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all">
+                        </div>
+                        <button type="submit"
+                            class="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 active:scale-95">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Submit Antrean
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Stats Dashboard -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-indigo-600 rounded-2xl p-4 text-white">
+                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-70">Waiting</p>
+                        <h3 id="queueCount" class="text-3xl font-bold mt-1">0</h3>
+                        <p class="text-[10px] mt-1 opacity-80">Sampel Antre</p>
+                    </div>
+                    <div class="bg-emerald-500 rounded-2xl p-4 text-white">
+                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-70">Completed</p>
+                        <h3 id="historyCount" class="text-3xl font-bold mt-1">0</h3>
+                        <p class="text-[10px] mt-1 opacity-80">Sampel Selesai</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-3">
+                    <button id="btnProcess"
+                        class="w-full py-3 px-4 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 text-slate-600 font-bold rounded-xl transition-all flex items-center justify-between group">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Proses Berikutnya
+                        </span>
+                        <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                    <button id="btnSearch"
+                        class="w-full py-3 px-4 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 text-slate-600 font-bold rounded-xl transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Search Tracking
+                    </button>
+                    <button id="btnReset"
+                        class="w-full py-3 px-4 hover:bg-red-50 text-red-400 hover:text-red-600 font-bold rounded-xl transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Wipe Database
+                    </button>
+                </div>
             </div>
-          </div>
 
-          <!-- History -->
-          <div class="card">
-            <h2>
-              Riwayat Sampel Selesai
-              <span class="count" id="historyBadge">0</span>
-            </h2>
-            <p style="font-size: 0.92em; color: #aaa">
-              Sampel yang sudah diproses & selesai tercatat di bawah.
-            </p>
-            <div id="historyList" class="list">
-              <p class="empty">Belum ada sampel yang selesai diproses</p>
+            <!-- Right Panel: Lists -->
+            <div class="lg:col-span-8 space-y-8">
+                <!-- Queue Section -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold flex items-center gap-2">
+                            Antrean Prioritas
+                            <span id="queueBadge" class="px-2.5 py-0.5 bg-indigo-100 text-indigo-600 text-xs font-bold rounded-full">0</span>
+                        </h2>
+                        <span class="text-xs text-slate-400 font-medium italic">Sorting by: Priority Date (Linked List)</span>
+                    </div>
+                    <div id="queueList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Empty State Placeholder -->
+                        <div class="md:col-span-2 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
+                            <p class="text-slate-400 font-medium">Belum ada antrean yang masuk.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="pt-4 border-t border-slate-200">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        Riwayat Terkini
+                        <span id="historyBadge" class="px-2.5 py-0.5 bg-slate-200 text-slate-600 text-xs font-bold rounded-full">0</span>
+                    </h2>
+                    <div id="historyList" class="space-y-3">
+                        <p class="text-slate-400 text-sm italic">Belum ada riwayat pengerjaan.</p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </main>
+        </main>
 
-      <!-- Footer -->
-      <footer class="footer">
-        <p>Linked List Implementation &bull; Queue (FIFO) & Stack (LIFO)</p>
-      </footer>
+        <footer class="max-w-7xl mx-auto px-6 py-8 text-center text-slate-400 text-sm">
+            <p>&copy; 2026 LabTrack Pro System &bull; Built with C++ WASM & Tailwind</p>
+        </footer>
     </div>
 
-    <!-- Search Modal -->
-    <div id="searchModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Cari Sampel (berdasarkan kode)</h3>
-          <p style="color: #aaa; font-size: 0.95em; margin-bottom: 8px">
-            Masukkan kode misal: SPL-1001 lalu pencet Enter
-          </p>
-          <button class="modal-close" data-close>&times;</button>
+    <!-- Modal Search -->
+    <div id="searchModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold">Track Sample</h3>
+                <button class="modal-close text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <input type="text" id="searchInput" placeholder="Masukkan Kode (SPL-XXXX)"
+                    class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono text-center text-xl tracking-widest mb-6">
+                <div id="searchResult"></div>
+            </div>
         </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Masukkan kode (SPL-1001)"
-            class="search-input"
-          />
-          <div id="searchResult" class="search-result"></div>
-        </div>
-      </div>
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 right-8 z-50 transform translate-y-24 opacity-0 transition-all duration-300">
+        <div class="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+            <span id="toastIcon" class="text-indigo-400"></span>
+            <span id="toastMsg" class="font-medium text-sm"></span>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="lab.js"></script>
     <script src="app.js"></script>
-  </body>
+    <script>
+        // Update current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('id-ID', options);
+    </script>
+</body>
 </html>
