@@ -14,7 +14,7 @@
 
 using namespace std;
 
-// ====== GLOBAL COUNTER FOR AUTO-GENERATION ======
+// Deklarasi globalCounter untuk generate kode sample dan nomor antrean
 int sampleCounter = 1000;
 int antreanCounter = 0;  // No. Antrean (1, 2, 3, ...)
 
@@ -23,7 +23,6 @@ string generateSampleCode() {
   return "SPL-" + to_string(++sampleCounter);
 }
 
-// --- UTILITIES ---
 // Cetak garis dengan karakter dan panjang custom
 void printLine(char c = '-', int len = 60) {
   cout << string(len, c) << "\n";
@@ -71,7 +70,8 @@ void printTableLine() {
           "--------------+\n";
 }
 
-// --- TEMPLATE RESPONSE ---
+// TEMPLATE RESPONSE
+// biar mudah untuk mengolah data yang di hasilkan dengan menyama ratakan format response
 template <typename T> struct Response {
   bool status;
   string message;
@@ -88,7 +88,7 @@ template <> struct Response<void> {
 
 template <typename T> using Res = Response<T>;
 
-// --- ENUM JENIS UJI LABORATORIUM ---
+// ENUM JENIS UJI LABORATORIUM
 enum JenisUji {
   UJI_TARIK        = 1,
   UJI_TEKAN        = 2,
@@ -208,7 +208,7 @@ string bacaStringValid(const string& prompt,
   }
 }
 
-// --- STRUKTUR DATA NODE ---
+// STRUKTUR DATA NODE
 struct Sample {
   int noAntrean;
   string kode;
@@ -268,30 +268,30 @@ public:
     // Kasus 1: Antrean masih kosong
     if (head == nullptr) {
       head = tail = baru;
-    } 
+    }
     // Kasus 2: Tanggal sampel baru lebih awal dari head (jadi prioritas pertama)
     else if (tglBaru < parseTgl(head->jadwal)) {
       baru->next = head;
       head = baru;
-    } 
+    }
     // Kasus 3: Cari posisi yang pas di tengah atau belakang
     else {
       Sample *curr = head;
-      // Geser terus selama tanggal sampel berikutnya masih <= tanggal sampel baru
-      // Ini ngejamin kalo tanggal sama, yang masuk duluan tetep di depan (FIFO)
+      // Geser atau cari terus selama tanggal sampel berikutnya masih kurang dari atau sama dengan tanggal sampel baru
+      // Ini ngejamin kalo tanggal sama, yang masuk duluan tetep di depan (FIFO), karena <= bukan < doanbg
       while (curr->next != nullptr && parseTgl(curr->next->jadwal) <= tglBaru) {
         curr = curr->next;
       }
-      
+
       baru->next = curr->next;
       curr->next = baru;
-      
+
       // Update tail kalo ternyata masuk paling belakang
       if (baru->next == nullptr) {
         tail = baru;
       }
     }
-    
+
     return {true, "Sampel " + kode + " masuk antrean (Jadwal: " + jadwal + ")"};
   }
 
@@ -321,7 +321,7 @@ public:
 
   Response<void> printQueue() {
     if (head == nullptr) return {false, "Lagi gak ada antrean nih."};
-    
+
     Sample *t = head;
     int i = 1;
     cout << "\n\033[36m";
@@ -329,7 +329,7 @@ public:
     cout << ">>> URUTAN ANTREAN (BERDASARKAN PRIORITAS TANGGAL) <<<\n";
     printLine('=', 75);
     cout << "\033[0m";
-    
+
     while (t != nullptr) {
       cout << "  " << i++ << ". \033[1m[" << t->kode << "]\033[0m | \033[33m" << t->jadwal << "\033[0m\n"
            << "     Pengirim : " << t->pengirim << "\n"
@@ -451,7 +451,7 @@ int main() {
     clearScreen();
     // ASCII Art Header
     cout << kuning << R"(
-  _          _      ____    __  __       _            _       _ 
+  _          _      ____    __  __       _            _       _
  | |    __ _| |__  |  _ \  |  \/  | __ _| |_ ___ _ __(_) __ _| |
  | |   / _` | '_ \ | |_) | | |\/| |/ _` | __/ _ \ '__| |/ _` | |
  | |__| (_| | |_) ||  __/  | |  | | (_| | ||  __/ |  | | (_| | |
@@ -481,7 +481,7 @@ int main() {
     cout << "  [8] " << cyan << "@" << reset << " Filter Sampel (by Jenis Uji)\n";
     cout << "  [0] " << merah << "x" << reset << " Keluar\n\n";
     cout << "  Pilih menu (0-8): ";
-    
+
     // Input validation
     while (!(cin >> pilihan)) {
       cin.clear();
@@ -525,7 +525,7 @@ int main() {
       cout << "  Jenis Uji : " << jenisUjiToString(jenisUjiKode) << "\n";
       cout << "  Jadwal    : " << jdwl << "\n";
       printLine('-', 60);
-      
+
       int konfirmasi = bacaInt("  Simpan data? (1=Ya / 0=Tidak): ", 0, 1);
 
       if (konfirmasi == 1) {
@@ -577,9 +577,9 @@ int main() {
       cout << "  CARI SAMPEL\n";
       printLine('-', 60);
       cout << "\033[0m";
-      
+
       string kodeCari = bacaStringValid("  Masukkan Kode Sampel: ", validasiKodeSampel);
-      
+
       auto res = antrean.search(kodeCari);
       if (res.status) {
         cout << "\n\033[32m  " << res.message << "\033[0m\n";
@@ -603,20 +603,20 @@ int main() {
       cout << "  STATISTIK LABORATORIUM\n";
       printLine('-', 60);
       cout << "\033[0m";
-      
+
       int totalAntrean = antrean.getSize();
       int totalSelesai = riwayat.getSize();
       int totalSampel = totalAntrean + totalSelesai;
-      
+
       cout << "  Total Sampel Terdaftar    : " << "\033[33m" << totalSampel << "\033[0m\n";
       cout << "  Sampel dalam Antrean      : " << "\033[31m" << totalAntrean << "\033[0m\n";
       cout << "  Sampel Selesai Diproses   : " << "\033[32m" << totalSelesai << "\033[0m\n";
-      
+
       if (totalSampel > 0) {
         double persenSelesai = (totalSelesai * 100.0) / totalSampel;
         cout << "  Persentase Selesai        : " << "\033[32m" << fixed << setprecision(1) << persenSelesai << "%\033[0m\n";
       }
-      
+
       cout << "  Kode Sampel Terakhir      : " << "\033[33m" << "SPL-" << sampleCounter << "\033[0m\n";
       printLine('-', 60);
       break;
@@ -628,44 +628,44 @@ int main() {
       cout << "  FILTER SAMPEL BERDASARKAN JENIS UJI\n";
       printLine('-', 60);
       cout << "\033[0m";
-      
+
       cout << "  Pilih Jenis Uji:\n";
       for (int i = UJI_TARIK; i <= UJI_TERMAL; i++) {
         cout << "  [" << i << "] " << jenisUjiToString(i) << "\n";
       }
       cout << "  [0] Kembali ke Menu\n\n";
-      
+
       int jenisUjiFilter = bacaInt("  Pilih (0-10): ", 0, 10);
       if (jenisUjiFilter == 0) break;
-      
+
       cout << "\n  Sampel dengan Uji: " << "\033[36m" << jenisUjiToString(jenisUjiFilter) << "\033[0m\n";
       printLine('-', 60);
-      
+
       // Filter from both queue and history
       int found = 0;
-      
+
       // Check in antrian (queue)
       auto curr = antrean.getHead();
       while (curr != nullptr) {
         if (curr->jenisUjiKode == jenisUjiFilter) {
-          cout << "  [ANTREAN] " << curr->kode << " - Pengirim: " << curr->pengirim 
+          cout << "  [ANTREAN] " << curr->kode << " - Pengirim: " << curr->pengirim
                << " (Jadwal: " << curr->jadwal << ")\n";
           found++;
         }
         curr = curr->next;
       }
-      
+
       // Check in riwayat (history/stack)
       auto histCurr = riwayat.getTop();
       while (histCurr != nullptr) {
         if (histCurr->jenisUjiKode == jenisUjiFilter) {
-          cout << "  [SELESAI] " << histCurr->kode << " - Pengirim: " << histCurr->pengirim 
+          cout << "  [SELESAI] " << histCurr->kode << " - Pengirim: " << histCurr->pengirim
                << " (Jadwal: " << histCurr->jadwal << ")\n";
           found++;
         }
         histCurr = histCurr->next;
       }
-      
+
       if (found == 0) {
         cout << "  \033[33m[!] Tidak ada sampel dengan jenis uji ini.\033[0m\n";
       } else {
